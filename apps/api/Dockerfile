@@ -32,10 +32,10 @@ COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/apps/api/node_modules ./apps/api/node_modules
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
 COPY --from=builder /app/apps/api/package.json ./apps/api/
-COPY --from=builder /app/apps/api/prisma ./apps/api/prisma
+# The prisma schema is already in /app/packages/database/prisma due to the copy above
 
 WORKDIR /app/apps/api
 EXPOSE 3001
 
 # Run DB Migrations and start the server
-CMD ["sh", "-c", "npx prisma migrate deploy && npm run start:prod"]
+CMD ["sh", "-c", "npx prisma migrate deploy --schema=../../packages/database/prisma/schema.prisma && npm run start:prod"]
