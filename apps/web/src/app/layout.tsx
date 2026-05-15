@@ -14,6 +14,9 @@ export const metadata: Metadata = {
     statusBarStyle: 'black-translucent',
     title: 'OXILO',
   },
+  other: {
+    'mobile-web-app-capable': 'yes',
+  },
 };
 
 export const viewport: Viewport = {
