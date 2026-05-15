@@ -26,8 +26,8 @@ RUN pnpm build
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-# Install Prisma globally so it's available for migrations
-RUN npm install -g prisma@5
+# Install OpenSSL (required by Prisma) and Prisma CLI
+RUN apk add --no-cache openssl && npm install -g prisma@5
 
 # Copy production dependencies and built files
 COPY --from=builder /app/node_modules ./node_modules
