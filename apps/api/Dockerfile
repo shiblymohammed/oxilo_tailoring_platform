@@ -38,6 +38,10 @@ COPY --from=builder /app/apps/api/package.json ./apps/api/
 # The prisma schema is already in /app/packages/database/prisma due to the copy above
 
 WORKDIR /app/apps/api
+
+# Create uploads directory for local file storage
+RUN mkdir -p /app/apps/api/uploads && chmod 777 /app/apps/api/uploads
+
 EXPOSE 3001
 
 # Run DB Migrations and start the server
