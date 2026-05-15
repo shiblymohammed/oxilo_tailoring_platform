@@ -4,6 +4,8 @@ import './globals.css';
 
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-inter' });
 import { Providers } from '@/components/Providers';
+import { InstallPrompt } from '@/components/InstallPrompt';
+import { OfflineBanner } from '@/components/OfflineBanner';
 import { Toaster } from 'sonner';
 
 export const metadata: Metadata = {
@@ -33,6 +35,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`dark ${inter.variable}`}>
       <body className="font-sans antialiased bg-[#0f172a] text-slate-100">
         <Providers>{children}</Providers>
+        <InstallPrompt />
+        <OfflineBanner />
         <Toaster position="top-right" richColors closeButton />
       </body>
     </html>
