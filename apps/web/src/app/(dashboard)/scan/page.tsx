@@ -22,40 +22,54 @@ export default function ScanPage() {
   useEffect(() => {
     if (!Html5QrcodeScanner) return;
 
-    const scanner = new Html5QrcodeScanner('qr-reader', {
-      fps: 10,
-      qrbox: { width: 250, height: 250 },
-    }, false);
+    // Explicitly request camera permission first
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      .then((stream) => {
+        // Stop the temporary stream — the scanner will open its own
+        stream.getTracks().forEach(t => t.stop());
 
-    scanner.render(
-      async (decodedText: string) => {
-        setStatus('found');
-        scanner.clear();
-        try {
-          let orderId = decodedText;
-          try {
-            const parsed = JSON.parse(decodedText);
-            orderId = parsed.orderId ?? decodedText;
-          } catch {}
+        const scanner = new Html5QrcodeScanner('qr-reader', {
+          fps: 10,
+          qrbox: { width: 250, height: 250 },
+          rememberLastUsedCamera: true,
+          aspectRatio: 1,
+        }, false);
 
-          const order = await ordersApi.get(orderId);
-          toast.success(`Found: ${order.orderNumber}`);
-          router.push(`/orders/${order.id}`);
-        } catch {
-          setStatus('error');
-          toast.error('Order not found for this QR code');
-        }
-      },
-      (err: any) => {
-        // Ignore scan errors (happens every frame when no QR found)
-      }
-    );
+        scanner.render(
+          async (decodedText: string) => {
+            setStatus('found');
+            scanner.clear();
+            try {
+              let orderId = decodedText;
+              try {
+                const parsed = JSON.parse(decodedText);
+                orderId = parsed.orderId ?? decodedText;
+              } catch {}
 
-    setStatus('scanning');
-    scannerRef.current = scanner;
+              const order = await ordersApi.get(orderId);
+              toast.success(`Found: ${order.orderNumber}`);
+              router.push(`/orders/${order.id}`);
+            } catch {
+              setStatus('error');
+              toast.error('Order not found for this QR code');
+            }
+          },
+          (err: any) => {
+            // Ignore scan errors (happens every frame when no QR found)
+          }
+        );
+
+        setStatus('scanning');
+        scannerRef.current = scanner;
+      })
+      .catch((err) => {
+        console.error('Camera permission denied:', err);
+        toast.error('Camera access denied. Please allow camera permission.');
+        setStatus('error');
+      });
 
     return () => {
-      try { scanner.clear(); } catch {}
+      try { scannerRef.current?.clear(); } catch {}
     };
   }, [Html5QrcodeScanner]);
 
