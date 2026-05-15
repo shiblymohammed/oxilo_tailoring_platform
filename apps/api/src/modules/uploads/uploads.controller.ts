@@ -1,11 +1,15 @@
-import { Controller, Post, UseInterceptors, UploadedFile, UseGuards, Param } from '@nestjs/common';
+import { Controller, Post, UseInterceptors, UploadedFile, UseGuards, Param, BadRequestException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
 import { UploadsService } from './uploads.service';
 import { PrismaService } from '../../database/prisma.service';
+import { memoryStorage } from 'multer';
 
-const UPLOAD_OPTS = { limits: { fileSize: 20 * 1024 * 1024 } }; // 20MB
+const UPLOAD_OPTS = {
+  storage: memoryStorage(),
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
+};
 
 @ApiTags('Uploads')
 @ApiBearerAuth()
@@ -19,6 +23,7 @@ export class UploadsController {
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('file', UPLOAD_OPTS))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
+    if (!file) throw new BadRequestException('No file provided');
     const folder = file.mimetype.startsWith('audio') ? 'voice-notes' : 'ref-photos';
     return this.uploadsService.upload(file, folder);
   }
@@ -28,6 +33,7 @@ export class UploadsController {
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('file', UPLOAD_OPTS))
   async uploadOrderPhoto(@Param('itemId') itemId: string, @UploadedFile() file: Express.Multer.File) {
+    if (!file) throw new BadRequestException('No file provided');
     const { url, key } = await this.uploadsService.upload(file, 'order-photos');
     return this.prisma.orderPhoto.create({ data: { orderItemId: itemId, url, key } });
   }
