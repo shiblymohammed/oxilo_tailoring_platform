@@ -15,9 +15,11 @@ COPY packages ./packages
 # Install dependencies
 RUN pnpm install --frozen-lockfile
 
-# Generate Prisma and Build API
+# Generate Prisma Client
+RUN pnpm --filter @oxilo/database exec prisma generate
+
+# Build API
 WORKDIR /app/apps/api
-RUN pnpm prisma generate
 RUN pnpm build
 
 # --- Runner Stage ---
