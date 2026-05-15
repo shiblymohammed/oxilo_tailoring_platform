@@ -8,6 +8,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { BottomTabBar } from '@/components/layout/BottomTabBar';
 import { MobileHeader } from '@/components/layout/MobileHeader';
 import { Scissors } from 'lucide-react';
+import { PermissionsPrompt } from '@/components/PermissionsPrompt';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -58,6 +59,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* ── Mobile: bottom tab bar ── */}
       <BottomTabBar />
+
+      {/* ── First-launch permissions prompt ── */}
+      <PermissionsPrompt />
     </div>
   );
 }
