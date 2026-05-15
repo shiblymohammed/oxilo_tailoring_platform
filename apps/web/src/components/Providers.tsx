@@ -26,8 +26,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
         defaultOptions: {
           queries: {
             gcTime: 1000 * 60 * 60 * 24, // Keep offline cache for 24 hours
-            staleTime: 1000 * 30,
+            staleTime: 1000 * 5, // Data is fresh for 5 seconds only
             retry: 1,
+            refetchOnWindowFocus: true,
+            refetchOnMount: true,
           },
         },
       }),
