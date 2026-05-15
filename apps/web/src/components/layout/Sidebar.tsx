@@ -8,6 +8,7 @@ import {
   BarChart3, Settings, Scissors, QrCode, Menu, X, Wallet,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { SyncIndicator } from '@/components/SyncIndicator';
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -58,6 +59,7 @@ export function Sidebar() {
         <span className="font-bold text-white text-lg">OXILO</span>
       </div>
       <NavLinks />
+      <SyncIndicator />
       <div className="px-5 py-4 border-t border-[#334155]">
         <p className="text-slate-600 text-xs">v1.0.0</p>
       </div>
@@ -103,6 +105,7 @@ export function MobileNav() {
           </button>
         </div>
         <NavLinks onClose={() => setOpen(false)} />
+        <SyncIndicator />
       </div>
     </>
   );

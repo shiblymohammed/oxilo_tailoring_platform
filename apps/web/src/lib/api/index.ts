@@ -1,4 +1,10 @@
 import api from './client';
+import { offlineQueue } from '@/lib/offline-queue';
+import { toast } from 'sonner';
+
+function isNetworkError(error: any): boolean {
+  return !error.response && (error.code === 'ERR_NETWORK' || !navigator.onLine);
+}
 
 export const authApi = {
   login: (email: string, password: string) =>
@@ -15,7 +21,18 @@ export const customersApi = {
 
   get: (id: string) => api.get(`/customers/${id}`).then((r) => r.data.data),
 
-  create: (data: unknown) => api.post('/customers', data).then((r) => r.data.data),
+  create: async (data: unknown) => {
+    try {
+      return await api.post('/customers', data).then((r) => r.data.data);
+    } catch (err) {
+      if (isNetworkError(err)) {
+        await offlineQueue.add('CREATE_CUSTOMER', data);
+        toast.info('Saved offline — will sync when back online');
+        return { id: `offline-${Date.now()}`, ...(data as any), _offline: true };
+      }
+      throw err;
+    }
+  },
 
   update: (id: string, data: unknown) =>
     api.patch(`/customers/${id}`, data).then((r) => r.data.data),
@@ -28,10 +45,35 @@ export const ordersApi = {
   list: (params?: Record<string, unknown>) =>
     api.get('/orders', { params }).then((r) => r.data),
   get: (id: string) => api.get(`/orders/${id}`).then((r) => r.data.data),
-  create: (data: unknown) => api.post('/orders', data).then((r) => r.data.data),
+
+  create: async (data: unknown) => {
+    try {
+      return await api.post('/orders', data).then((r) => r.data.data);
+    } catch (err) {
+      if (isNetworkError(err)) {
+        await offlineQueue.add('CREATE_ORDER', data);
+        toast.info('Order saved offline — will sync when back online');
+        return { id: `offline-${Date.now()}`, ...(data as any), _offline: true };
+      }
+      throw err;
+    }
+  },
+
   update: (id: string, data: unknown) => api.patch(`/orders/${id}`, data).then((r) => r.data.data),
-  updateStatus: (id: string, data: unknown) =>
-    api.patch(`/orders/${id}/status`, data).then((r) => r.data.data),
+
+  updateStatus: async (id: string, data: unknown) => {
+    try {
+      return await api.patch(`/orders/${id}/status`, data).then((r) => r.data.data);
+    } catch (err) {
+      if (isNetworkError(err)) {
+        await offlineQueue.add('UPDATE_ORDER_STATUS', { id, ...(data as any) });
+        toast.info('Status update queued — will sync when back online');
+        return { id, ...(data as any), _offline: true };
+      }
+      throw err;
+    }
+  },
+
   duplicate: (id: string) => api.post(`/orders/${id}/duplicate`).then((r) => r.data.data),
   complete: (id: string, data: unknown) => api.post(`/orders/${id}/complete`, data).then((r) => r.data.data),
   todayDeliveries: () => api.get('/orders/today/deliveries').then((r) => r.data.data),
@@ -45,7 +87,20 @@ export const shopApi = {
 
 export const paymentsApi = {
   pending: () => api.get('/payments/pending').then((r) => r.data.data),
-  create: (data: unknown) => api.post('/payments', data).then((r) => r.data.data),
+
+  create: async (data: unknown) => {
+    try {
+      return await api.post('/payments', data).then((r) => r.data.data);
+    } catch (err) {
+      if (isNetworkError(err)) {
+        await offlineQueue.add('CREATE_PAYMENT', data);
+        toast.info('Payment saved offline — will sync when back online');
+        return { id: `offline-${Date.now()}`, ...(data as any), _offline: true };
+      }
+      throw err;
+    }
+  },
+
   forOrder: (orderId: string) => api.get(`/payments/order/${orderId}`).then((r) => r.data.data),
 };
 
@@ -93,3 +148,4 @@ export const uploadsApi = {
     return api.post('/uploads/file', fd).then((r) => r.data.data);
   },
 };
+
