@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --surface: #0f172a;
+    --surface-card: #1e293b;
+    --surface-border: #334155;
+    --surface-muted: #64748b;
+    --primary: #14b8a6;       /* teal-500 */
+    --primary-hover: #0d9488; /* teal-600 */
+  }
+
+  * { 
+    box-sizing: border-box; 
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+
+  body {
+    background-color: var(--surface);
+    background-image: radial-gradient(#1e293b 1.5px, transparent 1.5px);
+    background-size: 24px 24px;
+    color: #f1f5f9;
+    font-family: var(--font-inter), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    user-select: none; /* Prevents text selection on tap */
+    overscroll-behavior: none; /* Kills browser bounce globally */
+  }
+
+  /* Re-enable selection for inputs so typing works */
+  input, textarea, [contenteditable="true"] {
+    user-select: auto;
+  }
+
+  /* Removes 300ms tap delay and feels instantly responsive */
+  button, a {
+    touch-action: manipulation;
+  }
+
+  /* Hardware accelerated scrolling for native feel */
+  .scroll-container {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: scroll;
+    transform: translateZ(0); /* Forces GPU layer */
+  }
+  ::selection { background: rgba(20, 184, 166, 0.3); }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--surface); }
+  ::-webkit-scrollbar-thumb { background: var(--surface-border); border-radius: 3px; }
+}
+
+@layer components {
+  .card {
+    @apply bg-[#1e293b] border border-[#334155] rounded-xl p-4;
+    transition: transform 0.2s ease;
+  }
+  .card:active {
+    transform: scale(0.97);
+  }
+  .btn-primary {
+    @apply bg-sky-500 hover:bg-sky-600 text-white font-medium px-4 py-2 rounded-lg
+           transition-all duration-150 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-ghost {
+    @apply bg-transparent hover:bg-slate-700 text-slate-300 font-medium px-4 py-2 rounded-lg
+           transition-all duration-150;
+  }
+  .input {
+    @apply w-full bg-[#0f172a] border border-[#334155] rounded-lg px-3 py-2.5
+           text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500
+           focus:ring-1 focus:ring-sky-500 transition-colors;
+  }
+  .label {
+    @apply block text-sm font-medium text-slate-300 mb-1.5;
+  }
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  .label-section {
+    @apply text-sm font-semibold text-slate-200 border-b border-slate-700 pb-2 mb-1;
+  }
+}
+
+/* ── Mobile optimizations ── */
+@media (max-width: 767px) {
+  /* Larger touch targets for inputs and selects */
+  .input, select.input {
+    font-size: 16px; /* prevents iOS zoom on focus */
+    min-height: 44px;
+  }
+
+  /* Cards: slightly less padding on small screens */
+  .card {
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+  }
+
+  /* Buttons: taller touch targets */
+  .btn-primary, .btn-ghost {
+    min-height: 44px;
+  }
+
+  /* Prevent overscroll bounce on iOS */
+  html { overscroll-behavior: none; }
+}
+
+/* Safe area support */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+  .pt-safe { padding-top: env(safe-area-inset-top); }
+}

@@ -1,0 +1,328 @@
+// This is your Prisma schema file
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum Role {
+  OWNER
+  RECEPTION
+  STAFF
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum CustomerTier {
+  REGULAR
+  FREQUENT
+  VIP
+  INACTIVE
+}
+
+enum MeasurementCategory {
+  SHIRT
+  PANT
+  BLAZER
+  SHERWANI
+  SUIT
+  BLOUSE
+  CHURIDAR
+  FROCK
+  GOWN
+  UNIFORM
+  WEDDING
+  OTHER
+}
+
+enum OrderStatus {
+  RECEIVED
+  MEASUREMENT_TAKEN
+  CUTTING
+  STITCHING
+  TRIAL
+  ALTERATION
+  READY
+  DELIVERED
+  CANCELLED
+}
+
+enum Priority {
+  NORMAL
+  URGENT
+  WEDDING
+  FESTIVAL
+  VIP
+}
+
+enum PaymentMethod {
+  CASH
+  UPI
+  CARD
+  BANK_TRANSFER
+}
+
+enum ExpenseCategory {
+  THREAD
+  ELECTRICITY
+  SALARY
+  FABRIC
+  RENT
+  EQUIPMENT
+  OTHER
+}
+
+// ─── Models ──────────────────────────────────────────────────────────────────
+
+model Shop {
+  id               String   @id @default(cuid())
+  name             String
+  phone            String
+  address          String?
+  logoUrl          String?
+  timezone         String   @default("Asia/Kolkata")
+  currency         String   @default("INR")
+  googleReviewLink String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  users        User[]
+  customers    Customer[]
+  orders       Order[]
+  garmentTypes GarmentType[]
+  pricingRules PricingRule[]
+  expenses     Expense[]
+
+  @@map("shops")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  shopId       String
+  name         String
+  email        String   @unique
+  phone        String?
+  passwordHash String
+  role         Role     @default(STAFF)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  shop           Shop        @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  assignedOrders Order[]
+  statusLogs     StatusLog[]
+
+  @@index([shopId])
+  @@map("users")
+}
+
+model Customer {
+  id          String       @id @default(cuid())
+  shopId      String
+  name        String
+  phone       String
+  whatsapp    String?
+  email       String?
+  address     String?
+  gender      Gender?
+  birthday    DateTime?
+  anniversary DateTime?
+  notes       String?
+  tier        CustomerTier @default(REGULAR)
+  totalOrders Int          @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  shop         Shop                 @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  measurements MeasurementProfile[]
+  orders       Order[]
+
+  @@unique([shopId, phone])
+  @@index([shopId, name])
+  @@index([shopId, tier])
+  @@map("customers")
+}
+
+model MeasurementProfile {
+  id         String              @id @default(cuid())
+  customerId String
+  label      String
+  category   MeasurementCategory
+  fields     Json
+  isDefault  Boolean             @default(false)
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+
+  customer   Customer             @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  versions   MeasurementVersion[]
+  orderItems OrderItem[]
+
+  @@index([customerId])
+  @@map("measurement_profiles")
+}
+
+model MeasurementVersion {
+  id        String   @id @default(cuid())
+  profileId String
+  fields    Json
+  note      String?
+  createdAt DateTime @default(now())
+  createdBy String?
+
+  profile MeasurementProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@map("measurement_versions")
+}
+
+model Order {
+  id           String      @id @default(cuid())
+  shopId       String
+  customerId   String
+  orderNumber  String
+  status       OrderStatus @default(RECEIVED)
+  priority     Priority    @default(NORMAL)
+  deliveryDate DateTime
+  assignedToId String?
+  totalAmount  Decimal     @db.Decimal(10, 2)
+  advancePaid  Decimal     @default(0) @db.Decimal(10, 2)
+  balanceDue   Decimal     @default(0) @db.Decimal(10, 2)
+  notes        String?
+  isAlteration Boolean     @default(false)
+  qrCode       String?
+  trialDate    DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  shop       Shop        @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  customer   Customer    @relation(fields: [customerId], references: [id])
+  assignedTo User?       @relation(fields: [assignedToId], references: [id])
+  items      OrderItem[]
+  payments   Payment[]
+  statusLogs StatusLog[]
+
+  @@unique([shopId, orderNumber])
+  @@index([shopId, status])
+  @@index([shopId, deliveryDate])
+  @@index([shopId, customerId])
+  @@map("orders")
+}
+
+model OrderItem {
+  id                   String  @id @default(cuid())
+  orderId              String
+  garmentTypeId        String
+  measurementProfileId String?
+  quantity             Int     @default(1)
+  unitPrice            Decimal @db.Decimal(10, 2)
+  addOns               Json    @default("[]")
+  notes                String?
+
+  order              Order               @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  garmentType        GarmentType         @relation(fields: [garmentTypeId], references: [id])
+  measurementProfile MeasurementProfile? @relation(fields: [measurementProfileId], references: [id])
+  photos             OrderPhoto[]
+
+  @@index([orderId])
+  @@map("order_items")
+}
+
+model OrderPhoto {
+  id          String   @id @default(cuid())
+  orderItemId String
+  url         String
+  key         String // S3/R2 object key
+  caption     String?
+  uploadedAt  DateTime @default(now())
+
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+
+  @@map("order_photos")
+}
+
+model Payment {
+  id      String        @id @default(cuid())
+  orderId String
+  amount  Decimal       @db.Decimal(10, 2)
+  method  PaymentMethod
+  paidAt  DateTime      @default(now())
+  notes   String?
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@map("payments")
+}
+
+model StatusLog {
+  id        String      @id @default(cuid())
+  orderId   String
+  status    OrderStatus
+  note      String?
+  changedBy String?
+  changedAt DateTime    @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  user  User? @relation(fields: [changedBy], references: [id])
+
+  @@index([orderId])
+  @@map("status_logs")
+}
+
+model GarmentType {
+  id        String               @id @default(cuid())
+  shopId    String
+  name      String
+  basePrice Decimal              @db.Decimal(10, 2)
+  category  MeasurementCategory?
+  isActive  Boolean              @default(true)
+  createdAt DateTime             @default(now())
+
+  shop         Shop          @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  items        OrderItem[]
+  pricingRules PricingRule[]
+
+  @@index([shopId])
+  @@map("garment_types")
+}
+
+model PricingRule {
+  id            String  @id @default(cuid())
+  shopId        String
+  garmentTypeId String?
+  name          String
+  extraCost     Decimal @db.Decimal(10, 2)
+  isActive      Boolean @default(true)
+
+  shop        Shop         @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  garmentType GarmentType? @relation(fields: [garmentTypeId], references: [id])
+
+  @@index([shopId])
+  @@map("pricing_rules")
+}
+
+model Expense {
+  id          String          @id @default(cuid())
+  shopId      String
+  category    ExpenseCategory
+  amount      Decimal         @db.Decimal(10, 2)
+  description String?
+  date        DateTime        @default(now())
+
+  shop Shop @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@index([shopId, date])
+  @@map("expenses")
+}

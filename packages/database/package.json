@@ -1,0 +1,31 @@
+{
+  "name": "@oxilo/database",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./generated/index.js",
+  "types": "./generated/index.d.ts",
+  "scripts": {
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:seed": "ts-node --project tsconfig.json prisma/seed.ts",
+    "studio": "prisma studio"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.14.0",
+    "@types/bcryptjs": "^2.4.6",
+    "bcryptjs": "^2.4.3"
+  },
+  "devDependencies": {
+    "prisma": "^5.14.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.0"
+  },
+  "exports": {
+    ".": {
+      "import": "./generated/index.js",
+      "require": "./generated/index.js",
+      "types": "./generated/index.d.ts"
+    }
+  }
+}
