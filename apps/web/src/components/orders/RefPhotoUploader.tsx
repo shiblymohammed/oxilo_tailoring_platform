@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { Camera, X, Loader2, Image as ImageIcon } from 'lucide-react';
+import { Camera, X, Loader2, Image as ImageIcon, Upload } from 'lucide-react';
 import { uploadsApi } from '@/lib/api';
 import { toast } from 'sonner';
 
@@ -14,7 +14,8 @@ interface Props {
 }
 
 export function RefPhotoUploader({ photos, onChange, maxPhotos = 5 }: Props) {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
+  const galleryRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
 
   const handleFiles = async (files: FileList) => {
@@ -28,10 +29,15 @@ export function RefPhotoUploader({ photos, onChange, maxPhotos = 5 }: Props) {
       toast.error('Failed to upload photo(s)');
     } finally {
       setUploading(false);
+      // Reset inputs so same file can be re-selected
+      if (cameraRef.current) cameraRef.current.value = '';
+      if (galleryRef.current) galleryRef.current.value = '';
     }
   };
 
   const remove = (idx: number) => onChange(photos.filter((_, i) => i !== idx));
+
+  const remaining = maxPhotos - photos.length;
 
   return (
     <div>
@@ -54,26 +60,52 @@ export function RefPhotoUploader({ photos, onChange, maxPhotos = 5 }: Props) {
           </div>
         ))}
 
-        {photos.length < maxPhotos && (
-          <button
-            type="button"
-            onClick={() => inputRef.current?.click()}
-            disabled={uploading}
-            className="w-16 h-16 rounded-lg border-2 border-dashed border-slate-600 hover:border-sky-500 flex flex-col items-center justify-center gap-0.5 text-slate-500 hover:text-sky-400 transition-all"
-          >
-            {uploading
-              ? <Loader2 className="w-5 h-5 animate-spin" />
-              : <><ImageIcon className="w-5 h-5" /><span className="text-xs">Add</span></>
-            }
-          </button>
+        {remaining > 0 && !uploading && (
+          <>
+            {/* Camera capture button */}
+            <button
+              type="button"
+              onClick={() => cameraRef.current?.click()}
+              className="w-16 h-16 rounded-lg border-2 border-dashed border-slate-600 hover:border-sky-500 flex flex-col items-center justify-center gap-0.5 text-slate-500 hover:text-sky-400 transition-all"
+            >
+              <Camera className="w-5 h-5" />
+              <span className="text-[9px]">Camera</span>
+            </button>
+
+            {/* Gallery upload button */}
+            <button
+              type="button"
+              onClick={() => galleryRef.current?.click()}
+              className="w-16 h-16 rounded-lg border-2 border-dashed border-slate-600 hover:border-teal-500 flex flex-col items-center justify-center gap-0.5 text-slate-500 hover:text-teal-400 transition-all"
+            >
+              <Upload className="w-5 h-5" />
+              <span className="text-[9px]">Gallery</span>
+            </button>
+          </>
+        )}
+
+        {uploading && (
+          <div className="w-16 h-16 rounded-lg border-2 border-dashed border-sky-500/50 flex items-center justify-center">
+            <Loader2 className="w-5 h-5 text-sky-400 animate-spin" />
+          </div>
         )}
       </div>
 
+      {/* Camera input — forces camera */}
       <input
-        ref={inputRef}
+        ref={cameraRef}
         type="file"
         accept="image/*"
         capture="environment"
+        className="hidden"
+        onChange={e => e.target.files && handleFiles(e.target.files)}
+      />
+
+      {/* Gallery input — opens file picker / gallery */}
+      <input
+        ref={galleryRef}
+        type="file"
+        accept="image/*"
         multiple
         className="hidden"
         onChange={e => e.target.files && handleFiles(e.target.files)}
