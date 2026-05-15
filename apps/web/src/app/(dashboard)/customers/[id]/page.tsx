@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { MeasurementModal, type MeasurementProfile } from '@/components/customers/MeasurementModal';
+import { MeasurementCard } from '@/components/customers/MeasurementCard';
 
 export default function CustomerProfilePage() {
   const { id } = useParams<{ id: string }>();
@@ -173,28 +174,21 @@ export default function CustomerProfilePage() {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {measurements.map((m: any) => (
-                  <div key={m.id} className="bg-[#0f172a] rounded-lg p-3 border border-slate-700/50 group">
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-sm font-medium text-white">{m.label}</p>
-                      <div className="flex items-center gap-1.5">
-                        <span className="badge bg-slate-700 text-slate-300 text-xs">{m.category}</span>
-                        <button
-                          onClick={() => setEditingMeasurement({ id: m.id, label: m.label, category: m.category, fields: m.fields })}
-                          className="opacity-0 group-hover:opacity-100 p-1 rounded text-slate-500 hover:text-sky-400 transition-all"
-                          title="Edit measurements"
-                        >
-                          <Pencil className="w-3 h-3" />
-                        </button>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-1">
-                      {Object.entries(m.fields as Record<string, any>).slice(0, 6).map(([k, v]) => (
-                        <div key={k} className="flex justify-between text-xs">
-                          <span className="text-slate-500 capitalize">{k}</span>
-                          <span className="text-slate-300 font-medium">{String(v)}"</span>
-                        </div>
-                      ))}
-                    </div>
+                  <div key={m.id} className="relative group">
+                    <button
+                      onClick={() => setEditingMeasurement({ id: m.id, label: m.label, category: m.category, fields: m.fields })}
+                      className="absolute top-3 left-3 z-10 opacity-0 group-hover:opacity-100 w-7 h-7 rounded-lg bg-slate-700/80 hover:bg-sky-600 flex items-center justify-center text-slate-300 hover:text-white transition-all"
+                      title="Edit measurements"
+                    >
+                      <Pencil className="w-3.5 h-3.5" />
+                    </button>
+                    <MeasurementCard
+                      customerName={customer.name}
+                      label={m.label}
+                      category={m.category}
+                      fields={m.fields}
+                      date={formatDate(m.updatedAt || m.createdAt)}
+                    />
                   </div>
                 ))}
               </div>

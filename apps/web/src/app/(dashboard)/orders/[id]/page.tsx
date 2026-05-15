@@ -8,6 +8,7 @@ import { formatDate, formatDateTime, formatCurrency } from '@/lib/utils';
 import { ArrowLeft, Loader2, Copy, Printer, Phone, CreditCard, ChevronRight, CheckCheck, X, Tag, Clock, Calendar, Pencil, PlusCircle, Mic, Play, Pause, Image as ImageIcon } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
+import { MeasurementCard } from '@/components/customers/MeasurementCard';
 
 const STAGES = [
   { status: 'RECEIVED',          label: 'Received',  emoji: '📋' },
@@ -500,8 +501,14 @@ export default function OrderDetailPage() {
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1">
                       <p className="text-sm font-semibold text-white">{item.garmentType?.name}</p>
-                      {item.measurementProfile && (
-                        <p className="text-xs text-slate-400 mt-0.5">📏 {item.measurementProfile.label} ({item.measurementProfile.category})</p>
+                      {item.measurementProfile && item.measurementProfile.fields && (
+                        <MeasurementCard
+                          customerName={order.customer?.name || ''}
+                          label={item.measurementProfile.label}
+                          category={item.measurementProfile.category}
+                          fields={item.measurementProfile.fields}
+                          compact
+                        />
                       )}
                       {Array.isArray(item.addOns) && item.addOns.length > 0 && (
                         <div className="mt-2 space-y-1">
