@@ -26,6 +26,9 @@ RUN pnpm build
 FROM node:20-alpine AS runner
 WORKDIR /app
 
+# Install Prisma globally so it's available for migrations
+RUN npm install -g prisma
+
 # Copy production dependencies and built files
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages ./packages
@@ -38,4 +41,5 @@ WORKDIR /app/apps/api
 EXPOSE 3001
 
 # Run DB Migrations and start the server
-CMD ["sh", "-c", "npx prisma migrate deploy --schema=../../packages/database/prisma/schema.prisma && npm run start:prod"]
+# Run DB Migrations and start the server
+CMD ["sh", "-c", "prisma migrate deploy --schema=../../packages/database/prisma/schema.prisma && npm run start"]
