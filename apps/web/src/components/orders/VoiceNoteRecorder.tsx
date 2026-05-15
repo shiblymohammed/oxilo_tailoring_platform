@@ -29,10 +29,12 @@ export function VoiceNoteRecorder({ voiceNote, onChange }: Props) {
   const [duration, setDuration] = useState(0);
   const [playing, setPlaying]   = useState(false);
   const [progress, setProgress] = useState(0);
-  const mediaRef  = useRef<MediaRecorder | null>(null);
-  const chunksRef = useRef<Blob[]>([]);
-  const timerRef  = useRef<ReturnType<typeof setInterval> | null>(null);
-  const audioRef  = useRef<HTMLAudioElement | null>(null);
+  const mediaRef    = useRef<MediaRecorder | null>(null);
+  const chunksRef   = useRef<Blob[]>([]);
+  const timerRef    = useRef<ReturnType<typeof setInterval> | null>(null);
+  const audioRef    = useRef<HTMLAudioElement | null>(null);
+  const durationRef = useRef(0); // Track duration via ref to avoid stale closure
+  const startTimeRef = useRef(0);
 
   /* ── Start recording ── */
   const startRec = useCallback(async () => {
@@ -42,31 +44,53 @@ export function VoiceNoteRecorder({ voiceNote, onChange }: Props) {
       if (!mime) { toast.error('Voice recording not supported in this browser'); return; }
       const mr = new MediaRecorder(stream, { mimeType: mime });
       chunksRef.current = [];
+      startTimeRef.current = Date.now();
+
       mr.ondataavailable = e => { if (e.data.size > 0) chunksRef.current.push(e.data); };
+
       mr.onstop = async () => {
         stream.getTracks().forEach(t => t.stop());
+        if (timerRef.current) clearInterval(timerRef.current);
+
+        const finalDuration = Math.round((Date.now() - startTimeRef.current) / 1000);
         const blob = new Blob(chunksRef.current, { type: mime });
-        const ext  = mime.includes('ogg') ? 'ogg' : mime.includes('mp4') ? 'mp4' : 'webm';
+
+        if (blob.size < 100) {
+          toast.error('Recording too short — hold longer');
+          setRecState('idle');
+          return;
+        }
+
+        const ext = mime.includes('ogg') ? 'ogg' : mime.includes('mp4') ? 'mp4' : 'webm';
         setRecState('uploading');
+
         try {
-          const file   = new File([blob], `voice-${Date.now()}.${ext}`, { type: mime });
+          const file = new File([blob], `voice-${Date.now()}.${ext}`, { type: mime });
           const result = await uploadsApi.file(file);
-          onChange({ ...result, duration });
-        } catch {
-          toast.error('Failed to upload voice note');
+          onChange({ url: result.url, key: result.key, duration: finalDuration });
+          toast.success('Voice note saved!');
+        } catch (err: any) {
+          console.error('Voice upload error:', err);
+          toast.error(err?.response?.data?.message || 'Failed to upload voice note');
         } finally {
           setRecState('idle');
         }
       };
-      mr.start(200); // collect in 200ms chunks
+
+      mr.start(200);
       mediaRef.current = mr;
       setRecState('recording');
       setDuration(0);
-      timerRef.current = setInterval(() => setDuration(d => d + 1), 1000);
-    } catch {
+      durationRef.current = 0;
+      timerRef.current = setInterval(() => {
+        durationRef.current += 1;
+        setDuration(d => d + 1);
+      }, 1000);
+    } catch (err) {
+      console.error('Mic error:', err);
       toast.error('Microphone access denied');
     }
-  }, [duration, onChange]);
+  }, [onChange]);
 
   /* ── Stop recording ── */
   const stopRec = useCallback(() => {
@@ -131,8 +155,8 @@ export function VoiceNoteRecorder({ voiceNote, onChange }: Props) {
     <div
       onMouseDown={startRec}
       onMouseUp={stopRec}
-      onTouchStart={startRec}
-      onTouchEnd={stopRec}
+      onTouchStart={(e) => { e.preventDefault(); startRec(); }}
+      onTouchEnd={(e) => { e.preventDefault(); stopRec(); }}
       role="button"
       tabIndex={0}
       className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all select-none cursor-pointer ${
