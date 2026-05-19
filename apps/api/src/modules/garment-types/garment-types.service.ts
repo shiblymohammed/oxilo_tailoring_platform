@@ -9,7 +9,7 @@ export class GarmentTypesService {
     return this.prisma.garmentType.findMany({ where: { shopId, isActive: true }, orderBy: { name: 'asc' } });
   }
 
-  create(shopId: string, data: { name: string; basePrice: number; category?: any }) {
+  create(shopId: string, data: { name: string; basePrice: number; category?: any; measurementSchema?: any }) {
     return this.prisma.garmentType.create({ data: { ...data, shopId } });
   }
 

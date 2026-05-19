@@ -158,20 +158,22 @@ model Customer {
 }
 
 model MeasurementProfile {
-  id         String              @id @default(cuid())
-  customerId String
-  label      String
-  category   MeasurementCategory
-  fields     Json
-  isDefault  Boolean             @default(false)
-  createdAt  DateTime            @default(now())
-  updatedAt  DateTime            @updatedAt
+  id            String              @id @default(cuid())
+  customerId    String
+  garmentTypeId String
+  label         String
+  fields        Json
+  isDefault     Boolean             @default(false)
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
 
-  customer   Customer             @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  versions   MeasurementVersion[]
-  orderItems OrderItem[]
+  customer      Customer             @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  garmentType   GarmentType          @relation(fields: [garmentTypeId], references: [id])
+  versions      MeasurementVersion[]
+  orderItems    OrderItem[]
 
   @@index([customerId])
+  @@index([garmentTypeId])
   @@map("measurement_profiles")
 }
 
@@ -286,17 +288,19 @@ model StatusLog {
 }
 
 model GarmentType {
-  id        String              @id @default(cuid())
-  shopId    String
-  name      String
-  basePrice Decimal             @db.Decimal(10, 2)
-  category  MeasurementCategory?
-  isActive  Boolean             @default(true)
-  createdAt DateTime            @default(now())
+  id               String              @id @default(cuid())
+  shopId           String
+  name             String
+  basePrice        Decimal             @db.Decimal(10, 2)
+  category         MeasurementCategory?
+  isActive         Boolean             @default(true)
+  measurementSchema Json?
+  createdAt        DateTime            @default(now())
 
-  shop         Shop          @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  items        OrderItem[]
-  pricingRules PricingRule[]
+  shop                Shop                 @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  items               OrderItem[]
+  pricingRules        PricingRule[]
+  measurementProfiles MeasurementProfile[]
 
   @@index([shopId])
   @@map("garment_types")

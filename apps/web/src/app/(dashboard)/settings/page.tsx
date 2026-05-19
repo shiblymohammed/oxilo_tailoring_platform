@@ -4,7 +4,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { settingsApi, shopApi } from '@/lib/api';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { Settings, Plus, Loader2, Tag, Scissors, Check, X, Pencil, Store } from 'lucide-react';
+import { Settings, Plus, Loader2, Tag, Scissors, Check, X, Pencil, Store, SlidersHorizontal } from 'lucide-react';
+import SchemaBuilderModal from '@/components/SchemaBuilderModal';
 
 function EditableRow({
   label,
@@ -12,12 +13,14 @@ function EditableRow({
   valuePrefix = '',
   valueSuffix = '',
   onSave,
+  onConfigureSchema,
 }: {
   label: string;
   value: string | number;
   valuePrefix?: string;
   valueSuffix?: string;
   onSave: (newLabel: string, newValue: string) => Promise<void>;
+  onConfigureSchema?: () => void;
 }) {
   const [editing, setEditing] = useState(false);
   const [editLabel, setEditLabel] = useState(String(label));
@@ -96,6 +99,15 @@ function EditableRow({
         >
           <Pencil className="w-3 h-3" />
         </button>
+        {onConfigureSchema && (
+          <button
+            onClick={onConfigureSchema}
+            className="opacity-0 group-hover:opacity-100 p-1 rounded text-sky-500 hover:text-sky-400 hover:bg-sky-500/10 transition-all ml-1"
+            title="Configure Schema"
+          >
+            <SlidersHorizontal className="w-3 h-3" />
+          </button>
+        )}
       </div>
     </div>
   );
@@ -120,6 +132,7 @@ export default function SettingsPage() {
   const [newAddon, setNewAddon]     = useState({ name: '', extraCost: '' });
   const [upiId, setUpiId]           = useState('');
   const [upiSaving, setUpiSaving]   = useState(false);
+  const [selectedGarment, setSelectedGarment] = useState<any>(null);
 
   // Sync UPI ID from backend
   if (shop?.upiId && upiId === '') setUpiId(shop.upiId);
@@ -144,6 +157,18 @@ export default function SettingsPage() {
       toast.success('Price updated!');
     } catch {
       toast.error('Failed to update');
+      throw new Error('Failed');
+    }
+  };
+
+  const updateGarmentSchema = async (schema: any) => {
+    if (!selectedGarment) return;
+    try {
+      await settingsApi.updateGarmentType(selectedGarment.id, { measurementSchema: schema });
+      qc.invalidateQueries({ queryKey: ['garment-types'] });
+      toast.success('Schema saved!');
+    } catch {
+      toast.error('Failed to save schema');
       throw new Error('Failed');
     }
   };
@@ -208,6 +233,7 @@ export default function SettingsPage() {
                 value={g.basePrice}
                 valuePrefix="₹"
                 onSave={(name, basePrice) => updateGarment(g.id, name, basePrice)}
+                onConfigureSchema={() => setSelectedGarment(g)}
               />
             ))}
           </div>
@@ -360,6 +386,13 @@ export default function SettingsPage() {
       <p className="text-slate-600 text-xs text-center">
         💡 Prices set here are defaults — you can always override on individual orders
       </p>
+
+      <SchemaBuilderModal 
+        isOpen={!!selectedGarment} 
+        onClose={() => setSelectedGarment(null)} 
+        garmentType={selectedGarment} 
+        onSave={updateGarmentSchema} 
+      />
     </div>
   );
 }

@@ -170,8 +170,8 @@ exports.Prisma.CustomerScalarFieldEnum = {
 exports.Prisma.MeasurementProfileScalarFieldEnum = {
   id: 'id',
   customerId: 'customerId',
+  garmentTypeId: 'garmentTypeId',
   label: 'label',
-  category: 'category',
   fields: 'fields',
   isDefault: 'isDefault',
   createdAt: 'createdAt',
@@ -254,6 +254,7 @@ exports.Prisma.GarmentTypeScalarFieldEnum = {
   basePrice: 'basePrice',
   category: 'category',
   isActive: 'isActive',
+  measurementSchema: 'measurementSchema',
   createdAt: 'createdAt'
 };
 
@@ -281,6 +282,11 @@ exports.Prisma.SortOrder = {
 };
 
 exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull
 };
 
@@ -318,21 +324,6 @@ exports.CustomerTier = exports.$Enums.CustomerTier = {
   INACTIVE: 'INACTIVE'
 };
 
-exports.MeasurementCategory = exports.$Enums.MeasurementCategory = {
-  SHIRT: 'SHIRT',
-  PANT: 'PANT',
-  BLAZER: 'BLAZER',
-  SHERWANI: 'SHERWANI',
-  SUIT: 'SUIT',
-  BLOUSE: 'BLOUSE',
-  CHURIDAR: 'CHURIDAR',
-  FROCK: 'FROCK',
-  GOWN: 'GOWN',
-  UNIFORM: 'UNIFORM',
-  WEDDING: 'WEDDING',
-  OTHER: 'OTHER'
-};
-
 exports.OrderStatus = exports.$Enums.OrderStatus = {
   RECEIVED: 'RECEIVED',
   MEASUREMENT_TAKEN: 'MEASUREMENT_TAKEN',
@@ -358,6 +349,21 @@ exports.PaymentMethod = exports.$Enums.PaymentMethod = {
   UPI: 'UPI',
   CARD: 'CARD',
   BANK_TRANSFER: 'BANK_TRANSFER'
+};
+
+exports.MeasurementCategory = exports.$Enums.MeasurementCategory = {
+  SHIRT: 'SHIRT',
+  PANT: 'PANT',
+  BLAZER: 'BLAZER',
+  SHERWANI: 'SHERWANI',
+  SUIT: 'SUIT',
+  BLOUSE: 'BLOUSE',
+  CHURIDAR: 'CHURIDAR',
+  FROCK: 'FROCK',
+  GOWN: 'GOWN',
+  UNIFORM: 'UNIFORM',
+  WEDDING: 'WEDDING',
+  OTHER: 'OTHER'
 };
 
 exports.ExpenseCategory = exports.$Enums.ExpenseCategory = {

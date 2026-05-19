@@ -21,7 +21,7 @@ export class MeasurementsService {
     const customer = await this.prisma.customer.findFirst({ where: { id: customerId, shopId } });
     if (!customer) throw new NotFoundException('Customer not found');
     return this.prisma.measurementProfile.create({
-      data: { customerId, label: dto.label, category: dto.category, fields: dto.fields },
+      data: { customerId, label: dto.label, garmentTypeId: dto.garmentTypeId, fields: dto.fields },
     });
   }
 

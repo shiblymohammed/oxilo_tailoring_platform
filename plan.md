@@ -289,7 +289,7 @@ Print: order receipt · delivery slip · measurement card · worker slip
 | Trial scheduled    | Trial reminder      |
 | Order complete     | Ready for pickup    |
 | Payment pending    | Payment due         |
-
+ 
 #### Owner Notifications
 
 - Delayed orders

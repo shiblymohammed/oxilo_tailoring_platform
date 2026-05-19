@@ -111,24 +111,6 @@ export const CustomerTier: {
 export type CustomerTier = (typeof CustomerTier)[keyof typeof CustomerTier]
 
 
-export const MeasurementCategory: {
-  SHIRT: 'SHIRT',
-  PANT: 'PANT',
-  BLAZER: 'BLAZER',
-  SHERWANI: 'SHERWANI',
-  SUIT: 'SUIT',
-  BLOUSE: 'BLOUSE',
-  CHURIDAR: 'CHURIDAR',
-  FROCK: 'FROCK',
-  GOWN: 'GOWN',
-  UNIFORM: 'UNIFORM',
-  WEDDING: 'WEDDING',
-  OTHER: 'OTHER'
-};
-
-export type MeasurementCategory = (typeof MeasurementCategory)[keyof typeof MeasurementCategory]
-
-
 export const OrderStatus: {
   RECEIVED: 'RECEIVED',
   MEASUREMENT_TAKEN: 'MEASUREMENT_TAKEN',
@@ -165,6 +147,24 @@ export const PaymentMethod: {
 export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
 
 
+export const MeasurementCategory: {
+  SHIRT: 'SHIRT',
+  PANT: 'PANT',
+  BLAZER: 'BLAZER',
+  SHERWANI: 'SHERWANI',
+  SUIT: 'SUIT',
+  BLOUSE: 'BLOUSE',
+  CHURIDAR: 'CHURIDAR',
+  FROCK: 'FROCK',
+  GOWN: 'GOWN',
+  UNIFORM: 'UNIFORM',
+  WEDDING: 'WEDDING',
+  OTHER: 'OTHER'
+};
+
+export type MeasurementCategory = (typeof MeasurementCategory)[keyof typeof MeasurementCategory]
+
+
 export const ExpenseCategory: {
   THREAD: 'THREAD',
   ELECTRICITY: 'ELECTRICITY',
@@ -191,10 +191,6 @@ export type CustomerTier = $Enums.CustomerTier
 
 export const CustomerTier: typeof $Enums.CustomerTier
 
-export type MeasurementCategory = $Enums.MeasurementCategory
-
-export const MeasurementCategory: typeof $Enums.MeasurementCategory
-
 export type OrderStatus = $Enums.OrderStatus
 
 export const OrderStatus: typeof $Enums.OrderStatus
@@ -206,6 +202,10 @@ export const Priority: typeof $Enums.Priority
 export type PaymentMethod = $Enums.PaymentMethod
 
 export const PaymentMethod: typeof $Enums.PaymentMethod
+
+export type MeasurementCategory = $Enums.MeasurementCategory
+
+export const MeasurementCategory: typeof $Enums.MeasurementCategory
 
 export type ExpenseCategory = $Enums.ExpenseCategory
 
@@ -2285,11 +2285,13 @@ export namespace Prisma {
   export type GarmentTypeCountOutputType = {
     items: number
     pricingRules: number
+    measurementProfiles: number
   }
 
   export type GarmentTypeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     items?: boolean | GarmentTypeCountOutputTypeCountItemsArgs
     pricingRules?: boolean | GarmentTypeCountOutputTypeCountPricingRulesArgs
+    measurementProfiles?: boolean | GarmentTypeCountOutputTypeCountMeasurementProfilesArgs
   }
 
   // Custom InputTypes
@@ -2315,6 +2317,13 @@ export namespace Prisma {
    */
   export type GarmentTypeCountOutputTypeCountPricingRulesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PricingRuleWhereInput
+  }
+
+  /**
+   * GarmentTypeCountOutputType without action
+   */
+  export type GarmentTypeCountOutputTypeCountMeasurementProfilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MeasurementProfileWhereInput
   }
 
 
@@ -5655,8 +5664,8 @@ export namespace Prisma {
   export type MeasurementProfileMinAggregateOutputType = {
     id: string | null
     customerId: string | null
+    garmentTypeId: string | null
     label: string | null
-    category: $Enums.MeasurementCategory | null
     isDefault: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -5665,8 +5674,8 @@ export namespace Prisma {
   export type MeasurementProfileMaxAggregateOutputType = {
     id: string | null
     customerId: string | null
+    garmentTypeId: string | null
     label: string | null
-    category: $Enums.MeasurementCategory | null
     isDefault: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -5675,8 +5684,8 @@ export namespace Prisma {
   export type MeasurementProfileCountAggregateOutputType = {
     id: number
     customerId: number
+    garmentTypeId: number
     label: number
-    category: number
     fields: number
     isDefault: number
     createdAt: number
@@ -5688,8 +5697,8 @@ export namespace Prisma {
   export type MeasurementProfileMinAggregateInputType = {
     id?: true
     customerId?: true
+    garmentTypeId?: true
     label?: true
-    category?: true
     isDefault?: true
     createdAt?: true
     updatedAt?: true
@@ -5698,8 +5707,8 @@ export namespace Prisma {
   export type MeasurementProfileMaxAggregateInputType = {
     id?: true
     customerId?: true
+    garmentTypeId?: true
     label?: true
-    category?: true
     isDefault?: true
     createdAt?: true
     updatedAt?: true
@@ -5708,8 +5717,8 @@ export namespace Prisma {
   export type MeasurementProfileCountAggregateInputType = {
     id?: true
     customerId?: true
+    garmentTypeId?: true
     label?: true
-    category?: true
     fields?: true
     isDefault?: true
     createdAt?: true
@@ -5792,8 +5801,8 @@ export namespace Prisma {
   export type MeasurementProfileGroupByOutputType = {
     id: string
     customerId: string
+    garmentTypeId: string
     label: string
-    category: $Enums.MeasurementCategory
     fields: JsonValue
     isDefault: boolean
     createdAt: Date
@@ -5820,13 +5829,14 @@ export namespace Prisma {
   export type MeasurementProfileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     customerId?: boolean
+    garmentTypeId?: boolean
     label?: boolean
-    category?: boolean
     fields?: boolean
     isDefault?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
+    garmentType?: boolean | GarmentTypeDefaultArgs<ExtArgs>
     versions?: boolean | MeasurementProfile$versionsArgs<ExtArgs>
     orderItems?: boolean | MeasurementProfile$orderItemsArgs<ExtArgs>
     _count?: boolean | MeasurementProfileCountOutputTypeDefaultArgs<ExtArgs>
@@ -5835,20 +5845,21 @@ export namespace Prisma {
   export type MeasurementProfileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     customerId?: boolean
+    garmentTypeId?: boolean
     label?: boolean
-    category?: boolean
     fields?: boolean
     isDefault?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
+    garmentType?: boolean | GarmentTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["measurementProfile"]>
 
   export type MeasurementProfileSelectScalar = {
     id?: boolean
     customerId?: boolean
+    garmentTypeId?: boolean
     label?: boolean
-    category?: boolean
     fields?: boolean
     isDefault?: boolean
     createdAt?: boolean
@@ -5857,26 +5868,29 @@ export namespace Prisma {
 
   export type MeasurementProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
+    garmentType?: boolean | GarmentTypeDefaultArgs<ExtArgs>
     versions?: boolean | MeasurementProfile$versionsArgs<ExtArgs>
     orderItems?: boolean | MeasurementProfile$orderItemsArgs<ExtArgs>
     _count?: boolean | MeasurementProfileCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type MeasurementProfileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
+    garmentType?: boolean | GarmentTypeDefaultArgs<ExtArgs>
   }
 
   export type $MeasurementProfilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "MeasurementProfile"
     objects: {
       customer: Prisma.$CustomerPayload<ExtArgs>
+      garmentType: Prisma.$GarmentTypePayload<ExtArgs>
       versions: Prisma.$MeasurementVersionPayload<ExtArgs>[]
       orderItems: Prisma.$OrderItemPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       customerId: string
+      garmentTypeId: string
       label: string
-      category: $Enums.MeasurementCategory
       fields: Prisma.JsonValue
       isDefault: boolean
       createdAt: Date
@@ -6246,6 +6260,7 @@ export namespace Prisma {
   export interface Prisma__MeasurementProfileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     customer<T extends CustomerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CustomerDefaultArgs<ExtArgs>>): Prisma__CustomerClient<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    garmentType<T extends GarmentTypeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, GarmentTypeDefaultArgs<ExtArgs>>): Prisma__GarmentTypeClient<$Result.GetResult<Prisma.$GarmentTypePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     versions<T extends MeasurementProfile$versionsArgs<ExtArgs> = {}>(args?: Subset<T, MeasurementProfile$versionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MeasurementVersionPayload<ExtArgs>, T, "findMany"> | Null>
     orderItems<T extends MeasurementProfile$orderItemsArgs<ExtArgs> = {}>(args?: Subset<T, MeasurementProfile$orderItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderItemPayload<ExtArgs>, T, "findMany"> | Null>
     /**
@@ -6279,8 +6294,8 @@ export namespace Prisma {
   interface MeasurementProfileFieldRefs {
     readonly id: FieldRef<"MeasurementProfile", 'String'>
     readonly customerId: FieldRef<"MeasurementProfile", 'String'>
+    readonly garmentTypeId: FieldRef<"MeasurementProfile", 'String'>
     readonly label: FieldRef<"MeasurementProfile", 'String'>
-    readonly category: FieldRef<"MeasurementProfile", 'MeasurementCategory'>
     readonly fields: FieldRef<"MeasurementProfile", 'Json'>
     readonly isDefault: FieldRef<"MeasurementProfile", 'Boolean'>
     readonly createdAt: FieldRef<"MeasurementProfile", 'DateTime'>
@@ -12839,6 +12854,7 @@ export namespace Prisma {
     basePrice: number
     category: number
     isActive: number
+    measurementSchema: number
     createdAt: number
     _all: number
   }
@@ -12879,6 +12895,7 @@ export namespace Prisma {
     basePrice?: true
     category?: true
     isActive?: true
+    measurementSchema?: true
     createdAt?: true
     _all?: true
   }
@@ -12976,6 +12993,7 @@ export namespace Prisma {
     basePrice: Decimal
     category: $Enums.MeasurementCategory | null
     isActive: boolean
+    measurementSchema: JsonValue | null
     createdAt: Date
     _count: GarmentTypeCountAggregateOutputType | null
     _avg: GarmentTypeAvgAggregateOutputType | null
@@ -13005,10 +13023,12 @@ export namespace Prisma {
     basePrice?: boolean
     category?: boolean
     isActive?: boolean
+    measurementSchema?: boolean
     createdAt?: boolean
     shop?: boolean | ShopDefaultArgs<ExtArgs>
     items?: boolean | GarmentType$itemsArgs<ExtArgs>
     pricingRules?: boolean | GarmentType$pricingRulesArgs<ExtArgs>
+    measurementProfiles?: boolean | GarmentType$measurementProfilesArgs<ExtArgs>
     _count?: boolean | GarmentTypeCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["garmentType"]>
 
@@ -13019,6 +13039,7 @@ export namespace Prisma {
     basePrice?: boolean
     category?: boolean
     isActive?: boolean
+    measurementSchema?: boolean
     createdAt?: boolean
     shop?: boolean | ShopDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["garmentType"]>
@@ -13030,6 +13051,7 @@ export namespace Prisma {
     basePrice?: boolean
     category?: boolean
     isActive?: boolean
+    measurementSchema?: boolean
     createdAt?: boolean
   }
 
@@ -13037,6 +13059,7 @@ export namespace Prisma {
     shop?: boolean | ShopDefaultArgs<ExtArgs>
     items?: boolean | GarmentType$itemsArgs<ExtArgs>
     pricingRules?: boolean | GarmentType$pricingRulesArgs<ExtArgs>
+    measurementProfiles?: boolean | GarmentType$measurementProfilesArgs<ExtArgs>
     _count?: boolean | GarmentTypeCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type GarmentTypeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -13049,6 +13072,7 @@ export namespace Prisma {
       shop: Prisma.$ShopPayload<ExtArgs>
       items: Prisma.$OrderItemPayload<ExtArgs>[]
       pricingRules: Prisma.$PricingRulePayload<ExtArgs>[]
+      measurementProfiles: Prisma.$MeasurementProfilePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -13057,6 +13081,7 @@ export namespace Prisma {
       basePrice: Prisma.Decimal
       category: $Enums.MeasurementCategory | null
       isActive: boolean
+      measurementSchema: Prisma.JsonValue | null
       createdAt: Date
     }, ExtArgs["result"]["garmentType"]>
     composites: {}
@@ -13425,6 +13450,7 @@ export namespace Prisma {
     shop<T extends ShopDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ShopDefaultArgs<ExtArgs>>): Prisma__ShopClient<$Result.GetResult<Prisma.$ShopPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     items<T extends GarmentType$itemsArgs<ExtArgs> = {}>(args?: Subset<T, GarmentType$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderItemPayload<ExtArgs>, T, "findMany"> | Null>
     pricingRules<T extends GarmentType$pricingRulesArgs<ExtArgs> = {}>(args?: Subset<T, GarmentType$pricingRulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PricingRulePayload<ExtArgs>, T, "findMany"> | Null>
+    measurementProfiles<T extends GarmentType$measurementProfilesArgs<ExtArgs> = {}>(args?: Subset<T, GarmentType$measurementProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MeasurementProfilePayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -13460,6 +13486,7 @@ export namespace Prisma {
     readonly basePrice: FieldRef<"GarmentType", 'Decimal'>
     readonly category: FieldRef<"GarmentType", 'MeasurementCategory'>
     readonly isActive: FieldRef<"GarmentType", 'Boolean'>
+    readonly measurementSchema: FieldRef<"GarmentType", 'Json'>
     readonly createdAt: FieldRef<"GarmentType", 'DateTime'>
   }
     
@@ -13816,6 +13843,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PricingRuleScalarFieldEnum | PricingRuleScalarFieldEnum[]
+  }
+
+  /**
+   * GarmentType.measurementProfiles
+   */
+  export type GarmentType$measurementProfilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MeasurementProfile
+     */
+    select?: MeasurementProfileSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MeasurementProfileInclude<ExtArgs> | null
+    where?: MeasurementProfileWhereInput
+    orderBy?: MeasurementProfileOrderByWithRelationInput | MeasurementProfileOrderByWithRelationInput[]
+    cursor?: MeasurementProfileWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MeasurementProfileScalarFieldEnum | MeasurementProfileScalarFieldEnum[]
   }
 
   /**
@@ -15883,8 +15930,8 @@ export namespace Prisma {
   export const MeasurementProfileScalarFieldEnum: {
     id: 'id',
     customerId: 'customerId',
+    garmentTypeId: 'garmentTypeId',
     label: 'label',
-    category: 'category',
     fields: 'fields',
     isDefault: 'isDefault',
     createdAt: 'createdAt',
@@ -15988,6 +16035,7 @@ export namespace Prisma {
     basePrice: 'basePrice',
     category: 'category',
     isActive: 'isActive',
+    measurementSchema: 'measurementSchema',
     createdAt: 'createdAt'
   };
 
@@ -16031,6 +16079,14 @@ export namespace Prisma {
   };
 
   export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
   export const QueryMode: {
@@ -16155,20 +16211,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'MeasurementCategory'
-   */
-  export type EnumMeasurementCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MeasurementCategory'>
-    
-
-
-  /**
-   * Reference to a field of type 'MeasurementCategory[]'
-   */
-  export type ListEnumMeasurementCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MeasurementCategory[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Json'
    */
   export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
@@ -16228,6 +16270,20 @@ export namespace Prisma {
    * Reference to a field of type 'PaymentMethod[]'
    */
   export type ListEnumPaymentMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentMethod[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'MeasurementCategory'
+   */
+  export type EnumMeasurementCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MeasurementCategory'>
+    
+
+
+  /**
+   * Reference to a field of type 'MeasurementCategory[]'
+   */
+  export type ListEnumMeasurementCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MeasurementCategory[]'>
     
 
 
@@ -16568,13 +16624,14 @@ export namespace Prisma {
     NOT?: MeasurementProfileWhereInput | MeasurementProfileWhereInput[]
     id?: StringFilter<"MeasurementProfile"> | string
     customerId?: StringFilter<"MeasurementProfile"> | string
+    garmentTypeId?: StringFilter<"MeasurementProfile"> | string
     label?: StringFilter<"MeasurementProfile"> | string
-    category?: EnumMeasurementCategoryFilter<"MeasurementProfile"> | $Enums.MeasurementCategory
     fields?: JsonFilter<"MeasurementProfile">
     isDefault?: BoolFilter<"MeasurementProfile"> | boolean
     createdAt?: DateTimeFilter<"MeasurementProfile"> | Date | string
     updatedAt?: DateTimeFilter<"MeasurementProfile"> | Date | string
     customer?: XOR<CustomerRelationFilter, CustomerWhereInput>
+    garmentType?: XOR<GarmentTypeRelationFilter, GarmentTypeWhereInput>
     versions?: MeasurementVersionListRelationFilter
     orderItems?: OrderItemListRelationFilter
   }
@@ -16582,13 +16639,14 @@ export namespace Prisma {
   export type MeasurementProfileOrderByWithRelationInput = {
     id?: SortOrder
     customerId?: SortOrder
+    garmentTypeId?: SortOrder
     label?: SortOrder
-    category?: SortOrder
     fields?: SortOrder
     isDefault?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     customer?: CustomerOrderByWithRelationInput
+    garmentType?: GarmentTypeOrderByWithRelationInput
     versions?: MeasurementVersionOrderByRelationAggregateInput
     orderItems?: OrderItemOrderByRelationAggregateInput
   }
@@ -16599,13 +16657,14 @@ export namespace Prisma {
     OR?: MeasurementProfileWhereInput[]
     NOT?: MeasurementProfileWhereInput | MeasurementProfileWhereInput[]
     customerId?: StringFilter<"MeasurementProfile"> | string
+    garmentTypeId?: StringFilter<"MeasurementProfile"> | string
     label?: StringFilter<"MeasurementProfile"> | string
-    category?: EnumMeasurementCategoryFilter<"MeasurementProfile"> | $Enums.MeasurementCategory
     fields?: JsonFilter<"MeasurementProfile">
     isDefault?: BoolFilter<"MeasurementProfile"> | boolean
     createdAt?: DateTimeFilter<"MeasurementProfile"> | Date | string
     updatedAt?: DateTimeFilter<"MeasurementProfile"> | Date | string
     customer?: XOR<CustomerRelationFilter, CustomerWhereInput>
+    garmentType?: XOR<GarmentTypeRelationFilter, GarmentTypeWhereInput>
     versions?: MeasurementVersionListRelationFilter
     orderItems?: OrderItemListRelationFilter
   }, "id">
@@ -16613,8 +16672,8 @@ export namespace Prisma {
   export type MeasurementProfileOrderByWithAggregationInput = {
     id?: SortOrder
     customerId?: SortOrder
+    garmentTypeId?: SortOrder
     label?: SortOrder
-    category?: SortOrder
     fields?: SortOrder
     isDefault?: SortOrder
     createdAt?: SortOrder
@@ -16630,8 +16689,8 @@ export namespace Prisma {
     NOT?: MeasurementProfileScalarWhereWithAggregatesInput | MeasurementProfileScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"MeasurementProfile"> | string
     customerId?: StringWithAggregatesFilter<"MeasurementProfile"> | string
+    garmentTypeId?: StringWithAggregatesFilter<"MeasurementProfile"> | string
     label?: StringWithAggregatesFilter<"MeasurementProfile"> | string
-    category?: EnumMeasurementCategoryWithAggregatesFilter<"MeasurementProfile"> | $Enums.MeasurementCategory
     fields?: JsonWithAggregatesFilter<"MeasurementProfile">
     isDefault?: BoolWithAggregatesFilter<"MeasurementProfile"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"MeasurementProfile"> | Date | string
@@ -17117,10 +17176,12 @@ export namespace Prisma {
     basePrice?: DecimalFilter<"GarmentType"> | Decimal | DecimalJsLike | number | string
     category?: EnumMeasurementCategoryNullableFilter<"GarmentType"> | $Enums.MeasurementCategory | null
     isActive?: BoolFilter<"GarmentType"> | boolean
+    measurementSchema?: JsonNullableFilter<"GarmentType">
     createdAt?: DateTimeFilter<"GarmentType"> | Date | string
     shop?: XOR<ShopRelationFilter, ShopWhereInput>
     items?: OrderItemListRelationFilter
     pricingRules?: PricingRuleListRelationFilter
+    measurementProfiles?: MeasurementProfileListRelationFilter
   }
 
   export type GarmentTypeOrderByWithRelationInput = {
@@ -17130,10 +17191,12 @@ export namespace Prisma {
     basePrice?: SortOrder
     category?: SortOrderInput | SortOrder
     isActive?: SortOrder
+    measurementSchema?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     shop?: ShopOrderByWithRelationInput
     items?: OrderItemOrderByRelationAggregateInput
     pricingRules?: PricingRuleOrderByRelationAggregateInput
+    measurementProfiles?: MeasurementProfileOrderByRelationAggregateInput
   }
 
   export type GarmentTypeWhereUniqueInput = Prisma.AtLeast<{
@@ -17146,10 +17209,12 @@ export namespace Prisma {
     basePrice?: DecimalFilter<"GarmentType"> | Decimal | DecimalJsLike | number | string
     category?: EnumMeasurementCategoryNullableFilter<"GarmentType"> | $Enums.MeasurementCategory | null
     isActive?: BoolFilter<"GarmentType"> | boolean
+    measurementSchema?: JsonNullableFilter<"GarmentType">
     createdAt?: DateTimeFilter<"GarmentType"> | Date | string
     shop?: XOR<ShopRelationFilter, ShopWhereInput>
     items?: OrderItemListRelationFilter
     pricingRules?: PricingRuleListRelationFilter
+    measurementProfiles?: MeasurementProfileListRelationFilter
   }, "id">
 
   export type GarmentTypeOrderByWithAggregationInput = {
@@ -17159,6 +17224,7 @@ export namespace Prisma {
     basePrice?: SortOrder
     category?: SortOrderInput | SortOrder
     isActive?: SortOrder
+    measurementSchema?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: GarmentTypeCountOrderByAggregateInput
     _avg?: GarmentTypeAvgOrderByAggregateInput
@@ -17177,6 +17243,7 @@ export namespace Prisma {
     basePrice?: DecimalWithAggregatesFilter<"GarmentType"> | Decimal | DecimalJsLike | number | string
     category?: EnumMeasurementCategoryNullableWithAggregatesFilter<"GarmentType"> | $Enums.MeasurementCategory | null
     isActive?: BoolWithAggregatesFilter<"GarmentType"> | boolean
+    measurementSchema?: JsonNullableWithAggregatesFilter<"GarmentType">
     createdAt?: DateTimeWithAggregatesFilter<"GarmentType"> | Date | string
   }
 
@@ -17663,12 +17730,12 @@ export namespace Prisma {
   export type MeasurementProfileCreateInput = {
     id?: string
     label: string
-    category: $Enums.MeasurementCategory
     fields: JsonNullValueInput | InputJsonValue
     isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     customer: CustomerCreateNestedOneWithoutMeasurementsInput
+    garmentType: GarmentTypeCreateNestedOneWithoutMeasurementProfilesInput
     versions?: MeasurementVersionCreateNestedManyWithoutProfileInput
     orderItems?: OrderItemCreateNestedManyWithoutMeasurementProfileInput
   }
@@ -17676,8 +17743,8 @@ export namespace Prisma {
   export type MeasurementProfileUncheckedCreateInput = {
     id?: string
     customerId: string
+    garmentTypeId: string
     label: string
-    category: $Enums.MeasurementCategory
     fields: JsonNullValueInput | InputJsonValue
     isDefault?: boolean
     createdAt?: Date | string
@@ -17689,12 +17756,12 @@ export namespace Prisma {
   export type MeasurementProfileUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     label?: StringFieldUpdateOperationsInput | string
-    category?: EnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory
     fields?: JsonNullValueInput | InputJsonValue
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customer?: CustomerUpdateOneRequiredWithoutMeasurementsNestedInput
+    garmentType?: GarmentTypeUpdateOneRequiredWithoutMeasurementProfilesNestedInput
     versions?: MeasurementVersionUpdateManyWithoutProfileNestedInput
     orderItems?: OrderItemUpdateManyWithoutMeasurementProfileNestedInput
   }
@@ -17702,8 +17769,8 @@ export namespace Prisma {
   export type MeasurementProfileUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
+    garmentTypeId?: StringFieldUpdateOperationsInput | string
     label?: StringFieldUpdateOperationsInput | string
-    category?: EnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory
     fields?: JsonNullValueInput | InputJsonValue
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17715,8 +17782,8 @@ export namespace Prisma {
   export type MeasurementProfileCreateManyInput = {
     id?: string
     customerId: string
+    garmentTypeId: string
     label: string
-    category: $Enums.MeasurementCategory
     fields: JsonNullValueInput | InputJsonValue
     isDefault?: boolean
     createdAt?: Date | string
@@ -17726,7 +17793,6 @@ export namespace Prisma {
   export type MeasurementProfileUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     label?: StringFieldUpdateOperationsInput | string
-    category?: EnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory
     fields?: JsonNullValueInput | InputJsonValue
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17736,8 +17802,8 @@ export namespace Prisma {
   export type MeasurementProfileUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
+    garmentTypeId?: StringFieldUpdateOperationsInput | string
     label?: StringFieldUpdateOperationsInput | string
-    category?: EnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory
     fields?: JsonNullValueInput | InputJsonValue
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18238,10 +18304,12 @@ export namespace Prisma {
     basePrice: Decimal | DecimalJsLike | number | string
     category?: $Enums.MeasurementCategory | null
     isActive?: boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     shop: ShopCreateNestedOneWithoutGarmentTypesInput
     items?: OrderItemCreateNestedManyWithoutGarmentTypeInput
     pricingRules?: PricingRuleCreateNestedManyWithoutGarmentTypeInput
+    measurementProfiles?: MeasurementProfileCreateNestedManyWithoutGarmentTypeInput
   }
 
   export type GarmentTypeUncheckedCreateInput = {
@@ -18251,9 +18319,11 @@ export namespace Prisma {
     basePrice: Decimal | DecimalJsLike | number | string
     category?: $Enums.MeasurementCategory | null
     isActive?: boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     items?: OrderItemUncheckedCreateNestedManyWithoutGarmentTypeInput
     pricingRules?: PricingRuleUncheckedCreateNestedManyWithoutGarmentTypeInput
+    measurementProfiles?: MeasurementProfileUncheckedCreateNestedManyWithoutGarmentTypeInput
   }
 
   export type GarmentTypeUpdateInput = {
@@ -18262,10 +18332,12 @@ export namespace Prisma {
     basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     category?: NullableEnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     shop?: ShopUpdateOneRequiredWithoutGarmentTypesNestedInput
     items?: OrderItemUpdateManyWithoutGarmentTypeNestedInput
     pricingRules?: PricingRuleUpdateManyWithoutGarmentTypeNestedInput
+    measurementProfiles?: MeasurementProfileUpdateManyWithoutGarmentTypeNestedInput
   }
 
   export type GarmentTypeUncheckedUpdateInput = {
@@ -18275,9 +18347,11 @@ export namespace Prisma {
     basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     category?: NullableEnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: OrderItemUncheckedUpdateManyWithoutGarmentTypeNestedInput
     pricingRules?: PricingRuleUncheckedUpdateManyWithoutGarmentTypeNestedInput
+    measurementProfiles?: MeasurementProfileUncheckedUpdateManyWithoutGarmentTypeNestedInput
   }
 
   export type GarmentTypeCreateManyInput = {
@@ -18287,6 +18361,7 @@ export namespace Prisma {
     basePrice: Decimal | DecimalJsLike | number | string
     category?: $Enums.MeasurementCategory | null
     isActive?: boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
   }
 
@@ -18296,6 +18371,7 @@ export namespace Prisma {
     basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     category?: NullableEnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -18306,6 +18382,7 @@ export namespace Prisma {
     basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     category?: NullableEnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -18876,13 +18953,6 @@ export namespace Prisma {
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
   }
-
-  export type EnumMeasurementCategoryFilter<$PrismaModel = never> = {
-    equals?: $Enums.MeasurementCategory | EnumMeasurementCategoryFieldRefInput<$PrismaModel>
-    in?: $Enums.MeasurementCategory[] | ListEnumMeasurementCategoryFieldRefInput<$PrismaModel>
-    notIn?: $Enums.MeasurementCategory[] | ListEnumMeasurementCategoryFieldRefInput<$PrismaModel>
-    not?: NestedEnumMeasurementCategoryFilter<$PrismaModel> | $Enums.MeasurementCategory
-  }
   export type JsonFilter<$PrismaModel = never> = 
     | PatchUndefined<
         Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
@@ -18911,6 +18981,11 @@ export namespace Prisma {
     isNot?: CustomerWhereInput
   }
 
+  export type GarmentTypeRelationFilter = {
+    is?: GarmentTypeWhereInput
+    isNot?: GarmentTypeWhereInput
+  }
+
   export type MeasurementVersionListRelationFilter = {
     every?: MeasurementVersionWhereInput
     some?: MeasurementVersionWhereInput
@@ -18934,8 +19009,8 @@ export namespace Prisma {
   export type MeasurementProfileCountOrderByAggregateInput = {
     id?: SortOrder
     customerId?: SortOrder
+    garmentTypeId?: SortOrder
     label?: SortOrder
-    category?: SortOrder
     fields?: SortOrder
     isDefault?: SortOrder
     createdAt?: SortOrder
@@ -18945,8 +19020,8 @@ export namespace Prisma {
   export type MeasurementProfileMaxOrderByAggregateInput = {
     id?: SortOrder
     customerId?: SortOrder
+    garmentTypeId?: SortOrder
     label?: SortOrder
-    category?: SortOrder
     isDefault?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -18955,21 +19030,11 @@ export namespace Prisma {
   export type MeasurementProfileMinOrderByAggregateInput = {
     id?: SortOrder
     customerId?: SortOrder
+    garmentTypeId?: SortOrder
     label?: SortOrder
-    category?: SortOrder
     isDefault?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type EnumMeasurementCategoryWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.MeasurementCategory | EnumMeasurementCategoryFieldRefInput<$PrismaModel>
-    in?: $Enums.MeasurementCategory[] | ListEnumMeasurementCategoryFieldRefInput<$PrismaModel>
-    notIn?: $Enums.MeasurementCategory[] | ListEnumMeasurementCategoryFieldRefInput<$PrismaModel>
-    not?: NestedEnumMeasurementCategoryWithAggregatesFilter<$PrismaModel> | $Enums.MeasurementCategory
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumMeasurementCategoryFilter<$PrismaModel>
-    _max?: NestedEnumMeasurementCategoryFilter<$PrismaModel>
   }
   export type JsonWithAggregatesFilter<$PrismaModel = never> = 
     | PatchUndefined<
@@ -19193,11 +19258,6 @@ export namespace Prisma {
     isNot?: OrderWhereInput
   }
 
-  export type GarmentTypeRelationFilter = {
-    is?: GarmentTypeWhereInput
-    isNot?: GarmentTypeWhereInput
-  }
-
   export type MeasurementProfileNullableRelationFilter = {
     is?: MeasurementProfileWhereInput | null
     isNot?: MeasurementProfileWhereInput | null
@@ -19371,6 +19431,28 @@ export namespace Prisma {
     notIn?: $Enums.MeasurementCategory[] | ListEnumMeasurementCategoryFieldRefInput<$PrismaModel> | null
     not?: NestedEnumMeasurementCategoryNullableFilter<$PrismaModel> | $Enums.MeasurementCategory | null
   }
+  export type JsonNullableFilter<$PrismaModel = never> = 
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type GarmentTypeCountOrderByAggregateInput = {
     id?: SortOrder
@@ -19379,6 +19461,7 @@ export namespace Prisma {
     basePrice?: SortOrder
     category?: SortOrder
     isActive?: SortOrder
+    measurementSchema?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -19418,6 +19501,31 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedEnumMeasurementCategoryNullableFilter<$PrismaModel>
     _max?: NestedEnumMeasurementCategoryNullableFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> = 
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type GarmentTypeNullableRelationFilter = {
@@ -20006,6 +20114,12 @@ export namespace Prisma {
     connect?: CustomerWhereUniqueInput
   }
 
+  export type GarmentTypeCreateNestedOneWithoutMeasurementProfilesInput = {
+    create?: XOR<GarmentTypeCreateWithoutMeasurementProfilesInput, GarmentTypeUncheckedCreateWithoutMeasurementProfilesInput>
+    connectOrCreate?: GarmentTypeCreateOrConnectWithoutMeasurementProfilesInput
+    connect?: GarmentTypeWhereUniqueInput
+  }
+
   export type MeasurementVersionCreateNestedManyWithoutProfileInput = {
     create?: XOR<MeasurementVersionCreateWithoutProfileInput, MeasurementVersionUncheckedCreateWithoutProfileInput> | MeasurementVersionCreateWithoutProfileInput[] | MeasurementVersionUncheckedCreateWithoutProfileInput[]
     connectOrCreate?: MeasurementVersionCreateOrConnectWithoutProfileInput | MeasurementVersionCreateOrConnectWithoutProfileInput[]
@@ -20034,16 +20148,20 @@ export namespace Prisma {
     connect?: OrderItemWhereUniqueInput | OrderItemWhereUniqueInput[]
   }
 
-  export type EnumMeasurementCategoryFieldUpdateOperationsInput = {
-    set?: $Enums.MeasurementCategory
-  }
-
   export type CustomerUpdateOneRequiredWithoutMeasurementsNestedInput = {
     create?: XOR<CustomerCreateWithoutMeasurementsInput, CustomerUncheckedCreateWithoutMeasurementsInput>
     connectOrCreate?: CustomerCreateOrConnectWithoutMeasurementsInput
     upsert?: CustomerUpsertWithoutMeasurementsInput
     connect?: CustomerWhereUniqueInput
     update?: XOR<XOR<CustomerUpdateToOneWithWhereWithoutMeasurementsInput, CustomerUpdateWithoutMeasurementsInput>, CustomerUncheckedUpdateWithoutMeasurementsInput>
+  }
+
+  export type GarmentTypeUpdateOneRequiredWithoutMeasurementProfilesNestedInput = {
+    create?: XOR<GarmentTypeCreateWithoutMeasurementProfilesInput, GarmentTypeUncheckedCreateWithoutMeasurementProfilesInput>
+    connectOrCreate?: GarmentTypeCreateOrConnectWithoutMeasurementProfilesInput
+    upsert?: GarmentTypeUpsertWithoutMeasurementProfilesInput
+    connect?: GarmentTypeWhereUniqueInput
+    update?: XOR<XOR<GarmentTypeUpdateToOneWithWhereWithoutMeasurementProfilesInput, GarmentTypeUpdateWithoutMeasurementProfilesInput>, GarmentTypeUncheckedUpdateWithoutMeasurementProfilesInput>
   }
 
   export type MeasurementVersionUpdateManyWithoutProfileNestedInput = {
@@ -20470,6 +20588,13 @@ export namespace Prisma {
     connect?: PricingRuleWhereUniqueInput | PricingRuleWhereUniqueInput[]
   }
 
+  export type MeasurementProfileCreateNestedManyWithoutGarmentTypeInput = {
+    create?: XOR<MeasurementProfileCreateWithoutGarmentTypeInput, MeasurementProfileUncheckedCreateWithoutGarmentTypeInput> | MeasurementProfileCreateWithoutGarmentTypeInput[] | MeasurementProfileUncheckedCreateWithoutGarmentTypeInput[]
+    connectOrCreate?: MeasurementProfileCreateOrConnectWithoutGarmentTypeInput | MeasurementProfileCreateOrConnectWithoutGarmentTypeInput[]
+    createMany?: MeasurementProfileCreateManyGarmentTypeInputEnvelope
+    connect?: MeasurementProfileWhereUniqueInput | MeasurementProfileWhereUniqueInput[]
+  }
+
   export type OrderItemUncheckedCreateNestedManyWithoutGarmentTypeInput = {
     create?: XOR<OrderItemCreateWithoutGarmentTypeInput, OrderItemUncheckedCreateWithoutGarmentTypeInput> | OrderItemCreateWithoutGarmentTypeInput[] | OrderItemUncheckedCreateWithoutGarmentTypeInput[]
     connectOrCreate?: OrderItemCreateOrConnectWithoutGarmentTypeInput | OrderItemCreateOrConnectWithoutGarmentTypeInput[]
@@ -20482,6 +20607,13 @@ export namespace Prisma {
     connectOrCreate?: PricingRuleCreateOrConnectWithoutGarmentTypeInput | PricingRuleCreateOrConnectWithoutGarmentTypeInput[]
     createMany?: PricingRuleCreateManyGarmentTypeInputEnvelope
     connect?: PricingRuleWhereUniqueInput | PricingRuleWhereUniqueInput[]
+  }
+
+  export type MeasurementProfileUncheckedCreateNestedManyWithoutGarmentTypeInput = {
+    create?: XOR<MeasurementProfileCreateWithoutGarmentTypeInput, MeasurementProfileUncheckedCreateWithoutGarmentTypeInput> | MeasurementProfileCreateWithoutGarmentTypeInput[] | MeasurementProfileUncheckedCreateWithoutGarmentTypeInput[]
+    connectOrCreate?: MeasurementProfileCreateOrConnectWithoutGarmentTypeInput | MeasurementProfileCreateOrConnectWithoutGarmentTypeInput[]
+    createMany?: MeasurementProfileCreateManyGarmentTypeInputEnvelope
+    connect?: MeasurementProfileWhereUniqueInput | MeasurementProfileWhereUniqueInput[]
   }
 
   export type NullableEnumMeasurementCategoryFieldUpdateOperationsInput = {
@@ -20524,6 +20656,20 @@ export namespace Prisma {
     deleteMany?: PricingRuleScalarWhereInput | PricingRuleScalarWhereInput[]
   }
 
+  export type MeasurementProfileUpdateManyWithoutGarmentTypeNestedInput = {
+    create?: XOR<MeasurementProfileCreateWithoutGarmentTypeInput, MeasurementProfileUncheckedCreateWithoutGarmentTypeInput> | MeasurementProfileCreateWithoutGarmentTypeInput[] | MeasurementProfileUncheckedCreateWithoutGarmentTypeInput[]
+    connectOrCreate?: MeasurementProfileCreateOrConnectWithoutGarmentTypeInput | MeasurementProfileCreateOrConnectWithoutGarmentTypeInput[]
+    upsert?: MeasurementProfileUpsertWithWhereUniqueWithoutGarmentTypeInput | MeasurementProfileUpsertWithWhereUniqueWithoutGarmentTypeInput[]
+    createMany?: MeasurementProfileCreateManyGarmentTypeInputEnvelope
+    set?: MeasurementProfileWhereUniqueInput | MeasurementProfileWhereUniqueInput[]
+    disconnect?: MeasurementProfileWhereUniqueInput | MeasurementProfileWhereUniqueInput[]
+    delete?: MeasurementProfileWhereUniqueInput | MeasurementProfileWhereUniqueInput[]
+    connect?: MeasurementProfileWhereUniqueInput | MeasurementProfileWhereUniqueInput[]
+    update?: MeasurementProfileUpdateWithWhereUniqueWithoutGarmentTypeInput | MeasurementProfileUpdateWithWhereUniqueWithoutGarmentTypeInput[]
+    updateMany?: MeasurementProfileUpdateManyWithWhereWithoutGarmentTypeInput | MeasurementProfileUpdateManyWithWhereWithoutGarmentTypeInput[]
+    deleteMany?: MeasurementProfileScalarWhereInput | MeasurementProfileScalarWhereInput[]
+  }
+
   export type OrderItemUncheckedUpdateManyWithoutGarmentTypeNestedInput = {
     create?: XOR<OrderItemCreateWithoutGarmentTypeInput, OrderItemUncheckedCreateWithoutGarmentTypeInput> | OrderItemCreateWithoutGarmentTypeInput[] | OrderItemUncheckedCreateWithoutGarmentTypeInput[]
     connectOrCreate?: OrderItemCreateOrConnectWithoutGarmentTypeInput | OrderItemCreateOrConnectWithoutGarmentTypeInput[]
@@ -20550,6 +20696,20 @@ export namespace Prisma {
     update?: PricingRuleUpdateWithWhereUniqueWithoutGarmentTypeInput | PricingRuleUpdateWithWhereUniqueWithoutGarmentTypeInput[]
     updateMany?: PricingRuleUpdateManyWithWhereWithoutGarmentTypeInput | PricingRuleUpdateManyWithWhereWithoutGarmentTypeInput[]
     deleteMany?: PricingRuleScalarWhereInput | PricingRuleScalarWhereInput[]
+  }
+
+  export type MeasurementProfileUncheckedUpdateManyWithoutGarmentTypeNestedInput = {
+    create?: XOR<MeasurementProfileCreateWithoutGarmentTypeInput, MeasurementProfileUncheckedCreateWithoutGarmentTypeInput> | MeasurementProfileCreateWithoutGarmentTypeInput[] | MeasurementProfileUncheckedCreateWithoutGarmentTypeInput[]
+    connectOrCreate?: MeasurementProfileCreateOrConnectWithoutGarmentTypeInput | MeasurementProfileCreateOrConnectWithoutGarmentTypeInput[]
+    upsert?: MeasurementProfileUpsertWithWhereUniqueWithoutGarmentTypeInput | MeasurementProfileUpsertWithWhereUniqueWithoutGarmentTypeInput[]
+    createMany?: MeasurementProfileCreateManyGarmentTypeInputEnvelope
+    set?: MeasurementProfileWhereUniqueInput | MeasurementProfileWhereUniqueInput[]
+    disconnect?: MeasurementProfileWhereUniqueInput | MeasurementProfileWhereUniqueInput[]
+    delete?: MeasurementProfileWhereUniqueInput | MeasurementProfileWhereUniqueInput[]
+    connect?: MeasurementProfileWhereUniqueInput | MeasurementProfileWhereUniqueInput[]
+    update?: MeasurementProfileUpdateWithWhereUniqueWithoutGarmentTypeInput | MeasurementProfileUpdateWithWhereUniqueWithoutGarmentTypeInput[]
+    updateMany?: MeasurementProfileUpdateManyWithWhereWithoutGarmentTypeInput | MeasurementProfileUpdateManyWithWhereWithoutGarmentTypeInput[]
+    deleteMany?: MeasurementProfileScalarWhereInput | MeasurementProfileScalarWhereInput[]
   }
 
   export type ShopCreateNestedOneWithoutPricingRulesInput = {
@@ -20824,23 +20984,6 @@ export namespace Prisma {
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
   }
-
-  export type NestedEnumMeasurementCategoryFilter<$PrismaModel = never> = {
-    equals?: $Enums.MeasurementCategory | EnumMeasurementCategoryFieldRefInput<$PrismaModel>
-    in?: $Enums.MeasurementCategory[] | ListEnumMeasurementCategoryFieldRefInput<$PrismaModel>
-    notIn?: $Enums.MeasurementCategory[] | ListEnumMeasurementCategoryFieldRefInput<$PrismaModel>
-    not?: NestedEnumMeasurementCategoryFilter<$PrismaModel> | $Enums.MeasurementCategory
-  }
-
-  export type NestedEnumMeasurementCategoryWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.MeasurementCategory | EnumMeasurementCategoryFieldRefInput<$PrismaModel>
-    in?: $Enums.MeasurementCategory[] | ListEnumMeasurementCategoryFieldRefInput<$PrismaModel>
-    notIn?: $Enums.MeasurementCategory[] | ListEnumMeasurementCategoryFieldRefInput<$PrismaModel>
-    not?: NestedEnumMeasurementCategoryWithAggregatesFilter<$PrismaModel> | $Enums.MeasurementCategory
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumMeasurementCategoryFilter<$PrismaModel>
-    _max?: NestedEnumMeasurementCategoryFilter<$PrismaModel>
-  }
   export type NestedJsonFilter<$PrismaModel = never> = 
     | PatchUndefined<
         Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
@@ -20957,6 +21100,28 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedEnumMeasurementCategoryNullableFilter<$PrismaModel>
     _max?: NestedEnumMeasurementCategoryNullableFilter<$PrismaModel>
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> = 
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type NestedEnumExpenseCategoryFilter<$PrismaModel = never> = {
@@ -21126,9 +21291,11 @@ export namespace Prisma {
     basePrice: Decimal | DecimalJsLike | number | string
     category?: $Enums.MeasurementCategory | null
     isActive?: boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     items?: OrderItemCreateNestedManyWithoutGarmentTypeInput
     pricingRules?: PricingRuleCreateNestedManyWithoutGarmentTypeInput
+    measurementProfiles?: MeasurementProfileCreateNestedManyWithoutGarmentTypeInput
   }
 
   export type GarmentTypeUncheckedCreateWithoutShopInput = {
@@ -21137,9 +21304,11 @@ export namespace Prisma {
     basePrice: Decimal | DecimalJsLike | number | string
     category?: $Enums.MeasurementCategory | null
     isActive?: boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     items?: OrderItemUncheckedCreateNestedManyWithoutGarmentTypeInput
     pricingRules?: PricingRuleUncheckedCreateNestedManyWithoutGarmentTypeInput
+    measurementProfiles?: MeasurementProfileUncheckedCreateNestedManyWithoutGarmentTypeInput
   }
 
   export type GarmentTypeCreateOrConnectWithoutShopInput = {
@@ -21340,6 +21509,7 @@ export namespace Prisma {
     basePrice?: DecimalFilter<"GarmentType"> | Decimal | DecimalJsLike | number | string
     category?: EnumMeasurementCategoryNullableFilter<"GarmentType"> | $Enums.MeasurementCategory | null
     isActive?: BoolFilter<"GarmentType"> | boolean
+    measurementSchema?: JsonNullableFilter<"GarmentType">
     createdAt?: DateTimeFilter<"GarmentType"> | Date | string
   }
 
@@ -21665,19 +21835,19 @@ export namespace Prisma {
   export type MeasurementProfileCreateWithoutCustomerInput = {
     id?: string
     label: string
-    category: $Enums.MeasurementCategory
     fields: JsonNullValueInput | InputJsonValue
     isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    garmentType: GarmentTypeCreateNestedOneWithoutMeasurementProfilesInput
     versions?: MeasurementVersionCreateNestedManyWithoutProfileInput
     orderItems?: OrderItemCreateNestedManyWithoutMeasurementProfileInput
   }
 
   export type MeasurementProfileUncheckedCreateWithoutCustomerInput = {
     id?: string
+    garmentTypeId: string
     label: string
-    category: $Enums.MeasurementCategory
     fields: JsonNullValueInput | InputJsonValue
     isDefault?: boolean
     createdAt?: Date | string
@@ -21825,8 +21995,8 @@ export namespace Prisma {
     NOT?: MeasurementProfileScalarWhereInput | MeasurementProfileScalarWhereInput[]
     id?: StringFilter<"MeasurementProfile"> | string
     customerId?: StringFilter<"MeasurementProfile"> | string
+    garmentTypeId?: StringFilter<"MeasurementProfile"> | string
     label?: StringFilter<"MeasurementProfile"> | string
-    category?: EnumMeasurementCategoryFilter<"MeasurementProfile"> | $Enums.MeasurementCategory
     fields?: JsonFilter<"MeasurementProfile">
     isDefault?: BoolFilter<"MeasurementProfile"> | boolean
     createdAt?: DateTimeFilter<"MeasurementProfile"> | Date | string
@@ -21890,6 +22060,37 @@ export namespace Prisma {
   export type CustomerCreateOrConnectWithoutMeasurementsInput = {
     where: CustomerWhereUniqueInput
     create: XOR<CustomerCreateWithoutMeasurementsInput, CustomerUncheckedCreateWithoutMeasurementsInput>
+  }
+
+  export type GarmentTypeCreateWithoutMeasurementProfilesInput = {
+    id?: string
+    name: string
+    basePrice: Decimal | DecimalJsLike | number | string
+    category?: $Enums.MeasurementCategory | null
+    isActive?: boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    shop: ShopCreateNestedOneWithoutGarmentTypesInput
+    items?: OrderItemCreateNestedManyWithoutGarmentTypeInput
+    pricingRules?: PricingRuleCreateNestedManyWithoutGarmentTypeInput
+  }
+
+  export type GarmentTypeUncheckedCreateWithoutMeasurementProfilesInput = {
+    id?: string
+    shopId: string
+    name: string
+    basePrice: Decimal | DecimalJsLike | number | string
+    category?: $Enums.MeasurementCategory | null
+    isActive?: boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    items?: OrderItemUncheckedCreateNestedManyWithoutGarmentTypeInput
+    pricingRules?: PricingRuleUncheckedCreateNestedManyWithoutGarmentTypeInput
+  }
+
+  export type GarmentTypeCreateOrConnectWithoutMeasurementProfilesInput = {
+    where: GarmentTypeWhereUniqueInput
+    create: XOR<GarmentTypeCreateWithoutMeasurementProfilesInput, GarmentTypeUncheckedCreateWithoutMeasurementProfilesInput>
   }
 
   export type MeasurementVersionCreateWithoutProfileInput = {
@@ -21999,6 +22200,43 @@ export namespace Prisma {
     orders?: OrderUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
+  export type GarmentTypeUpsertWithoutMeasurementProfilesInput = {
+    update: XOR<GarmentTypeUpdateWithoutMeasurementProfilesInput, GarmentTypeUncheckedUpdateWithoutMeasurementProfilesInput>
+    create: XOR<GarmentTypeCreateWithoutMeasurementProfilesInput, GarmentTypeUncheckedCreateWithoutMeasurementProfilesInput>
+    where?: GarmentTypeWhereInput
+  }
+
+  export type GarmentTypeUpdateToOneWithWhereWithoutMeasurementProfilesInput = {
+    where?: GarmentTypeWhereInput
+    data: XOR<GarmentTypeUpdateWithoutMeasurementProfilesInput, GarmentTypeUncheckedUpdateWithoutMeasurementProfilesInput>
+  }
+
+  export type GarmentTypeUpdateWithoutMeasurementProfilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    category?: NullableEnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    shop?: ShopUpdateOneRequiredWithoutGarmentTypesNestedInput
+    items?: OrderItemUpdateManyWithoutGarmentTypeNestedInput
+    pricingRules?: PricingRuleUpdateManyWithoutGarmentTypeNestedInput
+  }
+
+  export type GarmentTypeUncheckedUpdateWithoutMeasurementProfilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    shopId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    category?: NullableEnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: OrderItemUncheckedUpdateManyWithoutGarmentTypeNestedInput
+    pricingRules?: PricingRuleUncheckedUpdateManyWithoutGarmentTypeNestedInput
+  }
+
   export type MeasurementVersionUpsertWithWhereUniqueWithoutProfileInput = {
     where: MeasurementVersionWhereUniqueInput
     update: XOR<MeasurementVersionUpdateWithoutProfileInput, MeasurementVersionUncheckedUpdateWithoutProfileInput>
@@ -22060,20 +22298,20 @@ export namespace Prisma {
   export type MeasurementProfileCreateWithoutVersionsInput = {
     id?: string
     label: string
-    category: $Enums.MeasurementCategory
     fields: JsonNullValueInput | InputJsonValue
     isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     customer: CustomerCreateNestedOneWithoutMeasurementsInput
+    garmentType: GarmentTypeCreateNestedOneWithoutMeasurementProfilesInput
     orderItems?: OrderItemCreateNestedManyWithoutMeasurementProfileInput
   }
 
   export type MeasurementProfileUncheckedCreateWithoutVersionsInput = {
     id?: string
     customerId: string
+    garmentTypeId: string
     label: string
-    category: $Enums.MeasurementCategory
     fields: JsonNullValueInput | InputJsonValue
     isDefault?: boolean
     createdAt?: Date | string
@@ -22100,20 +22338,20 @@ export namespace Prisma {
   export type MeasurementProfileUpdateWithoutVersionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     label?: StringFieldUpdateOperationsInput | string
-    category?: EnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory
     fields?: JsonNullValueInput | InputJsonValue
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customer?: CustomerUpdateOneRequiredWithoutMeasurementsNestedInput
+    garmentType?: GarmentTypeUpdateOneRequiredWithoutMeasurementProfilesNestedInput
     orderItems?: OrderItemUpdateManyWithoutMeasurementProfileNestedInput
   }
 
   export type MeasurementProfileUncheckedUpdateWithoutVersionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
+    garmentTypeId?: StringFieldUpdateOperationsInput | string
     label?: StringFieldUpdateOperationsInput | string
-    category?: EnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory
     fields?: JsonNullValueInput | InputJsonValue
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22580,9 +22818,11 @@ export namespace Prisma {
     basePrice: Decimal | DecimalJsLike | number | string
     category?: $Enums.MeasurementCategory | null
     isActive?: boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     shop: ShopCreateNestedOneWithoutGarmentTypesInput
     pricingRules?: PricingRuleCreateNestedManyWithoutGarmentTypeInput
+    measurementProfiles?: MeasurementProfileCreateNestedManyWithoutGarmentTypeInput
   }
 
   export type GarmentTypeUncheckedCreateWithoutItemsInput = {
@@ -22592,8 +22832,10 @@ export namespace Prisma {
     basePrice: Decimal | DecimalJsLike | number | string
     category?: $Enums.MeasurementCategory | null
     isActive?: boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     pricingRules?: PricingRuleUncheckedCreateNestedManyWithoutGarmentTypeInput
+    measurementProfiles?: MeasurementProfileUncheckedCreateNestedManyWithoutGarmentTypeInput
   }
 
   export type GarmentTypeCreateOrConnectWithoutItemsInput = {
@@ -22604,20 +22846,20 @@ export namespace Prisma {
   export type MeasurementProfileCreateWithoutOrderItemsInput = {
     id?: string
     label: string
-    category: $Enums.MeasurementCategory
     fields: JsonNullValueInput | InputJsonValue
     isDefault?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     customer: CustomerCreateNestedOneWithoutMeasurementsInput
+    garmentType: GarmentTypeCreateNestedOneWithoutMeasurementProfilesInput
     versions?: MeasurementVersionCreateNestedManyWithoutProfileInput
   }
 
   export type MeasurementProfileUncheckedCreateWithoutOrderItemsInput = {
     id?: string
     customerId: string
+    garmentTypeId: string
     label: string
-    category: $Enums.MeasurementCategory
     fields: JsonNullValueInput | InputJsonValue
     isDefault?: boolean
     createdAt?: Date | string
@@ -22732,9 +22974,11 @@ export namespace Prisma {
     basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     category?: NullableEnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     shop?: ShopUpdateOneRequiredWithoutGarmentTypesNestedInput
     pricingRules?: PricingRuleUpdateManyWithoutGarmentTypeNestedInput
+    measurementProfiles?: MeasurementProfileUpdateManyWithoutGarmentTypeNestedInput
   }
 
   export type GarmentTypeUncheckedUpdateWithoutItemsInput = {
@@ -22744,8 +22988,10 @@ export namespace Prisma {
     basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     category?: NullableEnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     pricingRules?: PricingRuleUncheckedUpdateManyWithoutGarmentTypeNestedInput
+    measurementProfiles?: MeasurementProfileUncheckedUpdateManyWithoutGarmentTypeNestedInput
   }
 
   export type MeasurementProfileUpsertWithoutOrderItemsInput = {
@@ -22762,20 +23008,20 @@ export namespace Prisma {
   export type MeasurementProfileUpdateWithoutOrderItemsInput = {
     id?: StringFieldUpdateOperationsInput | string
     label?: StringFieldUpdateOperationsInput | string
-    category?: EnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory
     fields?: JsonNullValueInput | InputJsonValue
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customer?: CustomerUpdateOneRequiredWithoutMeasurementsNestedInput
+    garmentType?: GarmentTypeUpdateOneRequiredWithoutMeasurementProfilesNestedInput
     versions?: MeasurementVersionUpdateManyWithoutProfileNestedInput
   }
 
   export type MeasurementProfileUncheckedUpdateWithoutOrderItemsInput = {
     id?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
+    garmentTypeId?: StringFieldUpdateOperationsInput | string
     label?: StringFieldUpdateOperationsInput | string
-    category?: EnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory
     fields?: JsonNullValueInput | InputJsonValue
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23268,6 +23514,40 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type MeasurementProfileCreateWithoutGarmentTypeInput = {
+    id?: string
+    label: string
+    fields: JsonNullValueInput | InputJsonValue
+    isDefault?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    customer: CustomerCreateNestedOneWithoutMeasurementsInput
+    versions?: MeasurementVersionCreateNestedManyWithoutProfileInput
+    orderItems?: OrderItemCreateNestedManyWithoutMeasurementProfileInput
+  }
+
+  export type MeasurementProfileUncheckedCreateWithoutGarmentTypeInput = {
+    id?: string
+    customerId: string
+    label: string
+    fields: JsonNullValueInput | InputJsonValue
+    isDefault?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    versions?: MeasurementVersionUncheckedCreateNestedManyWithoutProfileInput
+    orderItems?: OrderItemUncheckedCreateNestedManyWithoutMeasurementProfileInput
+  }
+
+  export type MeasurementProfileCreateOrConnectWithoutGarmentTypeInput = {
+    where: MeasurementProfileWhereUniqueInput
+    create: XOR<MeasurementProfileCreateWithoutGarmentTypeInput, MeasurementProfileUncheckedCreateWithoutGarmentTypeInput>
+  }
+
+  export type MeasurementProfileCreateManyGarmentTypeInputEnvelope = {
+    data: MeasurementProfileCreateManyGarmentTypeInput | MeasurementProfileCreateManyGarmentTypeInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ShopUpsertWithoutGarmentTypesInput = {
     update: XOR<ShopUpdateWithoutGarmentTypesInput, ShopUncheckedUpdateWithoutGarmentTypesInput>
     create: XOR<ShopCreateWithoutGarmentTypesInput, ShopUncheckedCreateWithoutGarmentTypesInput>
@@ -23349,6 +23629,22 @@ export namespace Prisma {
     data: XOR<PricingRuleUpdateManyMutationInput, PricingRuleUncheckedUpdateManyWithoutGarmentTypeInput>
   }
 
+  export type MeasurementProfileUpsertWithWhereUniqueWithoutGarmentTypeInput = {
+    where: MeasurementProfileWhereUniqueInput
+    update: XOR<MeasurementProfileUpdateWithoutGarmentTypeInput, MeasurementProfileUncheckedUpdateWithoutGarmentTypeInput>
+    create: XOR<MeasurementProfileCreateWithoutGarmentTypeInput, MeasurementProfileUncheckedCreateWithoutGarmentTypeInput>
+  }
+
+  export type MeasurementProfileUpdateWithWhereUniqueWithoutGarmentTypeInput = {
+    where: MeasurementProfileWhereUniqueInput
+    data: XOR<MeasurementProfileUpdateWithoutGarmentTypeInput, MeasurementProfileUncheckedUpdateWithoutGarmentTypeInput>
+  }
+
+  export type MeasurementProfileUpdateManyWithWhereWithoutGarmentTypeInput = {
+    where: MeasurementProfileScalarWhereInput
+    data: XOR<MeasurementProfileUpdateManyMutationInput, MeasurementProfileUncheckedUpdateManyWithoutGarmentTypeInput>
+  }
+
   export type ShopCreateWithoutPricingRulesInput = {
     id?: string
     name: string
@@ -23398,9 +23694,11 @@ export namespace Prisma {
     basePrice: Decimal | DecimalJsLike | number | string
     category?: $Enums.MeasurementCategory | null
     isActive?: boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     shop: ShopCreateNestedOneWithoutGarmentTypesInput
     items?: OrderItemCreateNestedManyWithoutGarmentTypeInput
+    measurementProfiles?: MeasurementProfileCreateNestedManyWithoutGarmentTypeInput
   }
 
   export type GarmentTypeUncheckedCreateWithoutPricingRulesInput = {
@@ -23410,8 +23708,10 @@ export namespace Prisma {
     basePrice: Decimal | DecimalJsLike | number | string
     category?: $Enums.MeasurementCategory | null
     isActive?: boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     items?: OrderItemUncheckedCreateNestedManyWithoutGarmentTypeInput
+    measurementProfiles?: MeasurementProfileUncheckedCreateNestedManyWithoutGarmentTypeInput
   }
 
   export type GarmentTypeCreateOrConnectWithoutPricingRulesInput = {
@@ -23485,9 +23785,11 @@ export namespace Prisma {
     basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     category?: NullableEnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     shop?: ShopUpdateOneRequiredWithoutGarmentTypesNestedInput
     items?: OrderItemUpdateManyWithoutGarmentTypeNestedInput
+    measurementProfiles?: MeasurementProfileUpdateManyWithoutGarmentTypeNestedInput
   }
 
   export type GarmentTypeUncheckedUpdateWithoutPricingRulesInput = {
@@ -23497,8 +23799,10 @@ export namespace Prisma {
     basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     category?: NullableEnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: OrderItemUncheckedUpdateManyWithoutGarmentTypeNestedInput
+    measurementProfiles?: MeasurementProfileUncheckedUpdateManyWithoutGarmentTypeNestedInput
   }
 
   export type ShopCreateWithoutExpensesInput = {
@@ -23649,6 +23953,7 @@ export namespace Prisma {
     basePrice: Decimal | DecimalJsLike | number | string
     category?: $Enums.MeasurementCategory | null
     isActive?: boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
   }
 
@@ -23838,9 +24143,11 @@ export namespace Prisma {
     basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     category?: NullableEnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: OrderItemUpdateManyWithoutGarmentTypeNestedInput
     pricingRules?: PricingRuleUpdateManyWithoutGarmentTypeNestedInput
+    measurementProfiles?: MeasurementProfileUpdateManyWithoutGarmentTypeNestedInput
   }
 
   export type GarmentTypeUncheckedUpdateWithoutShopInput = {
@@ -23849,9 +24156,11 @@ export namespace Prisma {
     basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     category?: NullableEnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: OrderItemUncheckedUpdateManyWithoutGarmentTypeNestedInput
     pricingRules?: PricingRuleUncheckedUpdateManyWithoutGarmentTypeNestedInput
+    measurementProfiles?: MeasurementProfileUncheckedUpdateManyWithoutGarmentTypeNestedInput
   }
 
   export type GarmentTypeUncheckedUpdateManyWithoutShopInput = {
@@ -23860,6 +24169,7 @@ export namespace Prisma {
     basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     category?: NullableEnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    measurementSchema?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -24035,8 +24345,8 @@ export namespace Prisma {
 
   export type MeasurementProfileCreateManyCustomerInput = {
     id?: string
+    garmentTypeId: string
     label: string
-    category: $Enums.MeasurementCategory
     fields: JsonNullValueInput | InputJsonValue
     isDefault?: boolean
     createdAt?: Date | string
@@ -24067,19 +24377,19 @@ export namespace Prisma {
   export type MeasurementProfileUpdateWithoutCustomerInput = {
     id?: StringFieldUpdateOperationsInput | string
     label?: StringFieldUpdateOperationsInput | string
-    category?: EnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory
     fields?: JsonNullValueInput | InputJsonValue
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    garmentType?: GarmentTypeUpdateOneRequiredWithoutMeasurementProfilesNestedInput
     versions?: MeasurementVersionUpdateManyWithoutProfileNestedInput
     orderItems?: OrderItemUpdateManyWithoutMeasurementProfileNestedInput
   }
 
   export type MeasurementProfileUncheckedUpdateWithoutCustomerInput = {
     id?: StringFieldUpdateOperationsInput | string
+    garmentTypeId?: StringFieldUpdateOperationsInput | string
     label?: StringFieldUpdateOperationsInput | string
-    category?: EnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory
     fields?: JsonNullValueInput | InputJsonValue
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -24090,8 +24400,8 @@ export namespace Prisma {
 
   export type MeasurementProfileUncheckedUpdateManyWithoutCustomerInput = {
     id?: StringFieldUpdateOperationsInput | string
+    garmentTypeId?: StringFieldUpdateOperationsInput | string
     label?: StringFieldUpdateOperationsInput | string
-    category?: EnumMeasurementCategoryFieldUpdateOperationsInput | $Enums.MeasurementCategory
     fields?: JsonNullValueInput | InputJsonValue
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -24397,6 +24707,16 @@ export namespace Prisma {
     isActive?: boolean
   }
 
+  export type MeasurementProfileCreateManyGarmentTypeInput = {
+    id?: string
+    customerId: string
+    label: string
+    fields: JsonNullValueInput | InputJsonValue
+    isDefault?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type OrderItemUpdateWithoutGarmentTypeInput = {
     id?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
@@ -24451,6 +24771,40 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     extraCost?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type MeasurementProfileUpdateWithoutGarmentTypeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    fields?: JsonNullValueInput | InputJsonValue
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    customer?: CustomerUpdateOneRequiredWithoutMeasurementsNestedInput
+    versions?: MeasurementVersionUpdateManyWithoutProfileNestedInput
+    orderItems?: OrderItemUpdateManyWithoutMeasurementProfileNestedInput
+  }
+
+  export type MeasurementProfileUncheckedUpdateWithoutGarmentTypeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    fields?: JsonNullValueInput | InputJsonValue
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    versions?: MeasurementVersionUncheckedUpdateManyWithoutProfileNestedInput
+    orderItems?: OrderItemUncheckedUpdateManyWithoutMeasurementProfileNestedInput
+  }
+
+  export type MeasurementProfileUncheckedUpdateManyWithoutGarmentTypeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    fields?: JsonNullValueInput | InputJsonValue
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

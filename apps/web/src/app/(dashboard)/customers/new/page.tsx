@@ -13,13 +13,7 @@ import Link from 'next/link';
 const schema = z.object({
   name:        z.string().min(1, 'Name is required'),
   phone:       z.string().min(6, 'Phone is required'),
-  whatsapp:    z.string().optional(),
-  email:       z.string().email().optional().or(z.literal('')),
   address:     z.string().optional(),
-  gender:      z.enum(['MALE', 'FEMALE', 'OTHER']).optional(),
-  birthday:    z.string().optional(),
-  anniversary: z.string().optional(),
-  notes:       z.string().optional(),
 });
 type Form = z.infer<typeof schema>;
 
@@ -60,70 +54,24 @@ export default function NewCustomerPage() {
         <div className="card space-y-4">
           <h2 className="text-sm font-semibold text-slate-300 border-b border-slate-700 pb-2">Basic Information</h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-4">
             <div>
               <label className="label">Full Name *</label>
               <input {...register('name')} className="input text-sm h-10" placeholder="Ahmed Khan" />
               {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name.message}</p>}
             </div>
-            <div>
-              <label className="label">Gender</label>
-              <select {...register('gender')} className="input text-sm h-10 bg-[#1e293b]">
-                <option value="">Select gender</option>
-                <option value="MALE">Male</option>
-                <option value="FEMALE">Female</option>
-                <option value="OTHER">Other</option>
-              </select>
-            </div>
-          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="label">Phone *</label>
+              <label className="label">Phone Number *</label>
               <input {...register('phone')} type="tel" inputMode="tel" className="input text-sm h-10" placeholder="9876543210" />
               {errors.phone && <p className="text-red-400 text-xs mt-1">{errors.phone.message}</p>}
             </div>
+
             <div>
-              <label className="label">WhatsApp</label>
-              <input {...register('whatsapp')} type="tel" inputMode="tel" className="input text-sm h-10" placeholder="Same as phone?" />
+              <label className="label">Place (Address)</label>
+              <textarea {...register('address')} rows={2} className="input text-sm resize-none" placeholder="Street, City..." />
             </div>
           </div>
-
-          <div>
-            <label className="label">Email</label>
-            <input {...register('email')} type="email" inputMode="email" className="input text-sm h-10" placeholder="customer@email.com" />
-          </div>
-
-          <div>
-            <label className="label">Address</label>
-            <textarea {...register('address')} rows={2} className="input text-sm resize-none" placeholder="Street, City..." />
-          </div>
-        </div>
-
-        {/* Dates */}
-        <div className="card space-y-4">
-          <h2 className="text-sm font-semibold text-slate-300 border-b border-slate-700 pb-2">Special Dates</h2>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="label">Birthday</label>
-              <input {...register('birthday')} type="date" className="input text-sm h-10" />
-            </div>
-            <div>
-              <label className="label">Anniversary</label>
-              <input {...register('anniversary')} type="date" className="input text-sm h-10" />
-            </div>
-          </div>
-        </div>
-
-        {/* Notes */}
-        <div className="card">
-          <label className="label">Notes / Preferences</label>
-          <textarea
-            {...register('notes')}
-            rows={3}
-            className="input text-sm resize-none"
-            placeholder="Slim fit, prefers hidden pocket, avoid tight collars..."
-          />
         </div>
 
         {/* Actions - Sticky Bottom */}
