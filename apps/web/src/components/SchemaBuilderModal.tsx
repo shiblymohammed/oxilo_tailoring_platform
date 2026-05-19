@@ -82,6 +82,9 @@ export default function SchemaBuilderModal({
             <Dialog.Title className="text-xl font-bold text-white">
               Configure Fields: {garmentType?.name}
             </Dialog.Title>
+            <Dialog.Description className="sr-only">
+              Add and configure measurement fields for this garment type.
+            </Dialog.Description>
             <Dialog.Close asChild>
               <button className="text-slate-400 hover:text-white p-1 rounded-full hover:bg-slate-800">
                 <X className="w-5 h-5" />
