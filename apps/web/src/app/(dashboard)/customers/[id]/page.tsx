@@ -176,7 +176,7 @@ export default function CustomerProfilePage() {
                 {measurements.map((m: any) => (
                   <div key={m.id} className="relative group">
                     <button
-                      onClick={() => setEditingMeasurement({ id: m.id, label: m.label, category: m.category, fields: m.fields })}
+                      onClick={() => setEditingMeasurement({ id: m.id, label: m.label, garmentTypeId: m.garmentTypeId, fields: m.fields })}
                       className="absolute top-3 left-3 z-10 opacity-0 group-hover:opacity-100 w-7 h-7 rounded-lg bg-slate-700/80 hover:bg-sky-600 flex items-center justify-center text-slate-300 hover:text-white transition-all"
                       title="Edit measurements"
                     >
@@ -185,7 +185,7 @@ export default function CustomerProfilePage() {
                     <MeasurementCard
                       customerName={customer.name}
                       label={m.label}
-                      category={m.category}
+                      category={m.garmentType?.name || 'Unknown'}
                       fields={m.fields}
                       date={formatDate(m.updatedAt || m.createdAt)}
                     />

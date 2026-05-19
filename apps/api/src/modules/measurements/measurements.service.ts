@@ -12,7 +12,7 @@ export class MeasurementsService {
     if (!customer) throw new NotFoundException('Customer not found');
     return this.prisma.measurementProfile.findMany({
       where: { customerId },
-      include: { versions: { orderBy: { createdAt: 'desc' }, take: 5 } },
+      include: { garmentType: true, versions: { orderBy: { createdAt: 'desc' }, take: 5 } },
       orderBy: { createdAt: 'desc' },
     });
   }

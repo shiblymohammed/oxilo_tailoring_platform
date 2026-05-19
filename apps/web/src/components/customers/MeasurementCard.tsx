@@ -63,6 +63,8 @@ export function MeasurementCard({ customerName, label, category, fields, date, c
   };
 
   const fieldEntries = Object.entries(fields).filter(([_, v]) => v !== '' && v !== null && v !== undefined);
+  const textFields = fieldEntries.filter(([k, v]) => typeof v !== 'string' || !v.startsWith('data:image'));
+  const imageFields = fieldEntries.filter(([k, v]) => typeof v === 'string' && v.startsWith('data:image'));
 
   if (compact) {
     return (
@@ -74,7 +76,7 @@ export function MeasurementCard({ customerName, label, category, fields, date, c
           <span className="text-[10px] text-slate-500">{category}</span>
         </div>
         <div className="grid grid-cols-3 gap-x-3 gap-y-0.5">
-          {fieldEntries.map(([k, v]) => (
+          {textFields.map(([k, v]) => (
             <div key={k} className="flex justify-between text-[10px]">
               <span className="text-slate-500 capitalize truncate">{k}</span>
               <span className="text-slate-300 font-mono ml-1">{String(v)}&quot;</span>
@@ -137,7 +139,7 @@ export function MeasurementCard({ customerName, label, category, fields, date, c
 
         {/* Measurement Grid */}
         <div className="grid grid-cols-2 gap-2">
-          {fieldEntries.map(([key, value]) => (
+          {textFields.map(([key, value]) => (
             <div
               key={key}
               className="bg-[#0f172a]/60 rounded-lg px-3 py-2 border border-slate-700/30"
@@ -150,6 +152,21 @@ export function MeasurementCard({ customerName, label, category, fields, date, c
           ))}
         </div>
 
+        {/* Custom Drawings */}
+        {imageFields.length > 0 && (
+          <div className="mt-3 pt-3 border-t border-slate-700/30">
+            <p className="text-[10px] text-slate-500 font-medium mb-2 uppercase tracking-wider">Custom Drawings</p>
+            <div className="grid grid-cols-2 gap-2">
+              {imageFields.map(([key, value]) => (
+                <div key={key} className="bg-slate-900 rounded-lg p-1 border border-slate-700/50">
+                  <p className="text-[9px] text-slate-400 capitalize mb-1 px-1">{key.replace('_drawing', '')}</p>
+                  <img src={String(value)} alt={key} className="w-full h-auto rounded bg-slate-800" />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Footer */}
         <div className="mt-3 pt-2 border-t border-slate-700/30 flex items-center justify-between">
           <p className="text-[9px] text-slate-600">
@@ -157,7 +174,7 @@ export function MeasurementCard({ customerName, label, category, fields, date, c
           </p>
           <div className="flex items-center gap-1.5">
             <Ruler className="w-3 h-3 text-slate-600" />
-            <span className="text-[9px] text-slate-600">{fieldEntries.length} measurements</span>
+            <span className="text-[9px] text-slate-600">{textFields.length} measurements</span>
           </div>
         </div>
       </div>
