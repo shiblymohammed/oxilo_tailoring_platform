@@ -52,6 +52,18 @@ export default function SchemaBuilderModal({
     setFields(newFields);
   };
 
+  const addSubField = (fieldIndex: number) => {
+    const newFields = [...fields];
+    newFields[fieldIndex].subFields = [...(newFields[fieldIndex].subFields || []), { name: '', type: 'TEXT' }];
+    setFields(newFields);
+  };
+
+  const updateSubField = (fieldIndex: number, subIndex: number, key: string, value: any) => {
+    const newFields = [...fields];
+    newFields[fieldIndex].subFields[subIndex][key] = value;
+    setFields(newFields);
+  };
+
   const handleSave = async () => {
     setSaving(true);
     await onSave(fields);
@@ -97,6 +109,7 @@ export default function SchemaBuilderModal({
                         <option value="TEXT">Text/Number</option>
                         <option value="SELECT">Select Options</option>
                         <option value="DROPDOWN">Dropdown</option>
+                        <option value="GROUP">Group (Sub-fields)</option>
                       </select>
                     </div>
 
@@ -139,6 +152,38 @@ export default function SchemaBuilderModal({
                           className="text-xs text-sky-400 flex items-center gap-1 hover:text-sky-300 mt-1"
                         >
                           <Plus className="w-3 h-3" /> Add Option
+                        </button>
+                      </div>
+                    )}
+
+                    {field.type === 'GROUP' && (
+                      <div className="pl-4 border-l-2 border-sky-700/50 space-y-2 mt-2">
+                        <p className="text-xs font-medium text-slate-400">Sub-fields:</p>
+                        {(field.subFields || []).map((sub: any, subIdx: number) => (
+                          <div key={subIdx} className="flex gap-2 items-center">
+                            <input
+                              placeholder="Sub-field name (e.g. Upper, Lower)"
+                              value={sub.name}
+                              onChange={(e) => updateSubField(idx, subIdx, 'name', e.target.value)}
+                              className="input flex-1 py-1 text-sm bg-slate-900/50"
+                            />
+                            <button
+                              onClick={() => {
+                                const newFields = [...fields];
+                                newFields[idx].subFields.splice(subIdx, 1);
+                                setFields(newFields);
+                              }}
+                              className="text-red-400 hover:text-red-300 p-1"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ))}
+                        <button
+                          onClick={() => addSubField(idx)}
+                          className="text-xs text-sky-400 flex items-center gap-1 hover:text-sky-300 mt-1"
+                        >
+                          <Plus className="w-3 h-3" /> Add Sub-field
                         </button>
                       </div>
                     )}
